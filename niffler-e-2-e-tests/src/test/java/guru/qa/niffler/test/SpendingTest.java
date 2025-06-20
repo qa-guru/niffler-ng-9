@@ -22,7 +22,7 @@ public class SpendingTest {
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage("duck", "12345")
+        .fillLoginPage("sychevTest", "12341234")
         .submit()
         .checkThatPageLoaded()
         .editSpending(spendJson.description())
