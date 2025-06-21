@@ -3,6 +3,7 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.Users;
 import org.junit.jupiter.api.Test;
 
 public class LoginTest {
@@ -12,8 +13,15 @@ public class LoginTest {
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin() {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage("sychevTest", "12341234")
+        .fillLoginPage(Users.SYCHEV_TEST_USER_NAME, Users.SYCHEV_TEST_USER_PASSWORD)
         .submit()
         .checkThatPageLoaded();
+  }
+
+  @Test
+  void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .fillLoginPage(Users.getRandomUserName(), Users.getRandomUserPassword())
+            .submitAndCheckErrorInvalidCredentials();
   }
 }
