@@ -1,16 +1,25 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import lombok.Getter;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
+
+  @Getter
+  private final Header header = new Header();
+
   private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement spendingChart = $("#chart");
+  private final SelenideElement spendingLegend = $("#legend-container");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
+    spendingChart.should(visible);
+    spendingLegend.should(visible);
     return this;
   }
 
@@ -26,5 +35,9 @@ public class MainPage {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
     return this;
+  }
+
+  public UserProfilePage goToUserProfilePage() {
+    return header.openMenu().clickOnProfileButton();
   }
 }
