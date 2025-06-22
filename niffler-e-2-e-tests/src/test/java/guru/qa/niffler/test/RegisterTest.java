@@ -1,6 +1,5 @@
 package guru.qa.niffler.test;
 
-
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;

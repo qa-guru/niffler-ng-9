@@ -2,15 +2,11 @@ package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
