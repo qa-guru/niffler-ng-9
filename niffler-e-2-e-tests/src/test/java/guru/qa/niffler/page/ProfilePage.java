@@ -14,7 +14,6 @@ public class ProfilePage {
     private static final ElementsCollection categoryItems = $$("div.MuiChip-root");
     private static final SelenideElement archiveButton = $("button[aria-label='Archive category']");
     private static final SelenideElement unarchiveButton = $("button[aria-label='Unarchive category']");
-
     private static final SelenideElement dialogWindow = $("div.MuiDialog-paper");
     private static final SelenideElement dialogTitle = dialogWindow.$("h2.MuiTypography-h6");
     private static final SelenideElement dialogSubmitButton = dialogWindow.$("button.MuiButton-containedPrimary");
