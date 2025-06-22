@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.element.HeaderElement;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -8,6 +9,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
+  private final HeaderElement headerElement = new HeaderElement();
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -26,5 +28,10 @@ public class MainPage {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
     return this;
+  }
+
+  public ProfilePage openProfilePageFromHeader(){
+    headerElement.openProfilePageFromHeader();
+    return new ProfilePage();
   }
 }
