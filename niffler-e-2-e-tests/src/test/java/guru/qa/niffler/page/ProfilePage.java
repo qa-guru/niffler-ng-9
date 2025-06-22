@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ProfilePage {
@@ -46,6 +47,18 @@ public class ProfilePage {
     public ProfilePage archiveCategory(String categoryName){
         categoriesForm.$$("div").find(text(categoryName))
                 .$("[aria-label='Archive category']").click();
+        return this;
+    }
+
+    public ProfilePage checkCategory(String categoryName){
+        categoriesForm.$$("div").find(text(categoryName))
+                .should(visible);
+        return this;
+    }
+
+    public ProfilePage checkArchivedCategory(String categoryName){
+        categoriesForm.$$("div").find(text(categoryName))
+                .should(visible);
         return this;
     }
 }
