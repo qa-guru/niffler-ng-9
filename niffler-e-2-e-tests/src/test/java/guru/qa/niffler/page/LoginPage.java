@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class LoginPage {
   private final SelenideElement usernameInput = $("input[name='username']");
