@@ -29,7 +29,7 @@ public class ProfilePage {
     }
 
     public ProfilePage showArchivedCategories(){
-        categoriesForm.$$("div").get(0)
+        categoriesForm.$("div")
                 .$("label").click();
         return this;
     }
