@@ -7,8 +7,6 @@ import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.UUID;
-
 public class CategoryExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
@@ -22,13 +20,13 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
         ).ifPresent(
                 anno -> {
                     CategoryJson categoryJson = new CategoryJson(
-                            UUID.randomUUID(),
+                            null,
                             new Faker().funnyName().name(),
                             anno.username(),
                             false
                     );
                     CategoryJson created = spendApiClient.addCategory(categoryJson);
-                    if(anno.archived()){
+                    if(anno.archived() ){
                         CategoryJson archivedCategory = new CategoryJson(
                                 created.id(),
                                 created.name(),
@@ -60,7 +58,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE)
                 .get(context.getUniqueId(), CategoryJson.class);
-        if(!category.archived()){
+        if(!category.archived() ){
             CategoryJson archivedCategory = new CategoryJson(
                     category.id(),
                     category.name(),
