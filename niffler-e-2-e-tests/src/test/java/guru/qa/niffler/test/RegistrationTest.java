@@ -1,6 +1,8 @@
 package guru.qa.niffler.test;
 
+import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +18,8 @@ public class RegistrationTest {
 
     @BeforeEach
     void openPage(){
-        new RegisterPage().open();
+        Config CFG = Config.getInstance();
+        Selenide.open(CFG.registerPageUrl(), RegisterPage.class);
     }
 
     @DisplayName("Тест на успешную регистрацию нового пользователя")

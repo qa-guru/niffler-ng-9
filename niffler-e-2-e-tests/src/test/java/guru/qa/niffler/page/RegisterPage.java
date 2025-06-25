@@ -1,15 +1,11 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.config.Config;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class RegisterPage {
-
-    private static final Config CFG = Config.getInstance();
 
     private final SelenideElement
             usernameInput = $("#username"),
@@ -18,10 +14,6 @@ public class RegisterPage {
             submitButton = $("#register-button"),
             congratulationMessage = $(".form__paragraph_success"),
             errorMessage = $(".form__error");
-
-    public void open() {
-        Selenide.open(CFG.registerPageUrl());
-    }
 
     public RegisterPage setUserName(String username) {
         usernameInput.setValue(username);
