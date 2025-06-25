@@ -23,4 +23,9 @@ enum LocalConfig implements Config {
     return "http://127.0.0.1:9000/register";
   }
 
+  @Override
+  public String profilePageUrl() {
+    return "http://127.0.0.1:3000/profile";
+  }
+
 }

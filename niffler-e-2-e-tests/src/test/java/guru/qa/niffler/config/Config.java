@@ -13,4 +13,6 @@ public interface Config {
   String ghUrl();
 
   String registerPageUrl();
+
+  String profilePageUrl();
 }
