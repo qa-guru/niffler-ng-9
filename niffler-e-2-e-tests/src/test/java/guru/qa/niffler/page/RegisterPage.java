@@ -14,14 +14,15 @@ public class RegisterPage {
             passwordSubmit = $("#passwordSubmit"),
             submitButton = $("#register-button"),
             signInButton = $(".form_sign-in"),
-            congratulationMessage = $(".form__paragraph_success");
+            congratulationMessage = $(".form__paragraph_success"),
+            errorMessage = $(".form__error");
 
     public RegisterPage open() {
         Selenide.open("http://127.0.0.1:9000/register");
         return this;
     }
 
-    public RegisterPage setUsername(String username) {
+    public RegisterPage setUserName(String username) {
         usernameInput.setValue(username);
         return this;
     }
@@ -48,5 +49,9 @@ public class RegisterPage {
 
     public void checkSuccessfulRegistration(String congratulation) {
         congratulationMessage.shouldHave(text(congratulation));
+    }
+
+    public void checkUnsuccessfulRegistrationWithExistUserName(String text) {
+        errorMessage.shouldHave(text(text));
     }
 }
