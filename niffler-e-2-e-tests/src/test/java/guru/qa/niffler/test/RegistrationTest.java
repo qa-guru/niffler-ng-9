@@ -2,6 +2,7 @@ package guru.qa.niffler.test;
 
 import com.github.javafaker.Faker;
 import guru.qa.niffler.page.RegisterPage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,11 @@ public class RegistrationTest {
     private final String password = String.valueOf(10000 + new Random().nextInt(90000));
     private final String ExistUserName = "testUser2";
 
+    @BeforeEach
+    void openPage(){
+        new RegisterPage().open();
+    }
+
     @DisplayName("Тест на успешную регистрацию нового пользователя")
     @Test
     void shouldRegisterNewUse(){
@@ -20,7 +26,6 @@ public class RegistrationTest {
         String successMessage ="Congratulations! You've registered!";
 
         new RegisterPage()
-                .open()
                 .setUserName(username)
                 .setPassword(password)
                 .setPasswordSubmit(password)
@@ -32,7 +37,6 @@ public class RegistrationTest {
     @Test
     void shouldNotRegisterUserWithExistingUsername() {
         new RegisterPage()
-                .open()
                 .setUserName(ExistUserName)
                 .setPassword(password)
                 .setPasswordSubmit(password)
@@ -44,7 +48,6 @@ public class RegistrationTest {
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
         new RegisterPage()
-                .open()
                 .setUserName(ExistUserName)
                 .setPassword(password)
                 .setPasswordSubmit(password + "1")

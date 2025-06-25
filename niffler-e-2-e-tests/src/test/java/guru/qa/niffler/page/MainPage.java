@@ -7,7 +7,11 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
-  private final SelenideElement spendingTable = $("#spendings");
+
+  private final SelenideElement
+          spendingTable = $("#spendings"),
+          statisticsFigure = $("#stat"),
+          headerBlock = $("#root header");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -26,5 +30,11 @@ public class MainPage {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
     return this;
+  }
+
+  public void verifyMainPageOpened() {
+    spendingTable.shouldBe(visible);
+    statisticsFigure.shouldBe(visible);
+    headerBlock.shouldBe(visible);
   }
 }
