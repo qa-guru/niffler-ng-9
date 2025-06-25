@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
+import static guru.qa.niffler.page.Pages.mainPage;
 
 public class EditSpendingPage {
   private final SelenideElement amountInput = $("#amount");
@@ -17,6 +18,6 @@ public class EditSpendingPage {
 
   public MainPage save() {
     submitButton.click();
-    return new MainPage();
+    return mainPage;
   }
 }

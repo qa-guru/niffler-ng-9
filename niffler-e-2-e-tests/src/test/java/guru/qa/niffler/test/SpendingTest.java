@@ -15,7 +15,7 @@ public class SpendingTest {
   private static final Config CFG = Config.getInstance();
 
   @Spending(
-      username = "duck",
+      username = "marina",
       amount = 89990.00,
       description = "Advanced 9 поток!",
       category = "Обучение"
@@ -25,7 +25,7 @@ public class SpendingTest {
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage("duck", "12345")
+        .fillLoginPage("marina", "052322")
         .submit()
         .checkThatPageLoaded()
         .editSpending(spendJson.description())

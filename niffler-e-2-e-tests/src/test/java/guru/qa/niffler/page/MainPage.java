@@ -5,6 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static guru.qa.niffler.page.Pages.editSpendingPage;
 
 public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
@@ -19,7 +20,7 @@ public class MainPage {
         .$$("td")
         .get(5)
         .click();
-    return new EditSpendingPage();
+    return editSpendingPage;
   }
 
   public MainPage checkThatTableContainsSpending(String description) {
