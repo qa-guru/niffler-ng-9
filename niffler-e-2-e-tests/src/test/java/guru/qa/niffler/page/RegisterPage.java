@@ -13,7 +13,6 @@ public class RegisterPage {
             passwordInput = $("#password"),
             passwordSubmit = $("#passwordSubmit"),
             submitButton = $("#register-button"),
-            signInButton = $(".form_sign-in"),
             congratulationMessage = $(".form__paragraph_success"),
             errorMessage = $(".form__error");
 
@@ -42,16 +41,15 @@ public class RegisterPage {
         return this;
     }
 
-    public LoginPage signInRegistration() {
-        signInButton.click();
-        return new LoginPage();
-    }
-
     public void checkSuccessfulRegistration(String congratulation) {
         congratulationMessage.shouldHave(text(congratulation));
     }
 
     public void checkUnsuccessfulRegistrationWithExistUserName(String text) {
         errorMessage.shouldHave(text(text));
+    }
+
+    public void checkUnsuccessfulRegistrationIfPasswordAndConfirmPasswordAreNotEqual(String text) {
+        errorMessage.shouldBe(text(text));
     }
 }
