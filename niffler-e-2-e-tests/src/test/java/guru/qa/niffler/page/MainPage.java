@@ -1,13 +1,19 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.config.Config;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
-  private final SelenideElement spendingTable = $("#spendings");
+
+  private final SelenideElement
+          spendingTable = $("#spendings"),
+          statisticsFigure = $("#stat"),
+          headerBlock = $("#root header");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -22,9 +28,20 @@ public class MainPage {
     return new EditSpendingPage();
   }
 
-  public MainPage checkThatTableContainsSpending(String description) {
+  public void checkThatTableContainsSpending(String description) {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
-    return this;
+  }
+
+  public void verifyMainPageOpened() {
+    spendingTable.shouldBe(visible);
+    statisticsFigure.shouldBe(visible);
+    headerBlock.shouldBe(visible);
+  }
+
+  public ProfilePage navigateToProfilePage() {
+    Config CFG = Config.getInstance();
+    Selenide.open(CFG.profilePageUrl(), ProfilePage.class);
+    return new ProfilePage();
   }
 }

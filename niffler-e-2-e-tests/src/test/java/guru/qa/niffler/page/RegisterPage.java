@@ -1,6 +1,5 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.text;
@@ -13,15 +12,10 @@ public class RegisterPage {
             passwordInput = $("#password"),
             passwordSubmit = $("#passwordSubmit"),
             submitButton = $("#register-button"),
-            signInButton = $(".form_sign-in"),
-            congratulationMessage = $(".form__paragraph_success");
+            congratulationMessage = $(".form__paragraph_success"),
+            errorMessage = $(".form__error");
 
-    public RegisterPage open() {
-        Selenide.open("http://127.0.0.1:9000/register");
-        return this;
-    }
-
-    public RegisterPage setUsername(String username) {
+    public RegisterPage setUserName(String username) {
         usernameInput.setValue(username);
         return this;
     }
@@ -41,12 +35,15 @@ public class RegisterPage {
         return this;
     }
 
-    public LoginPage signInRegistration() {
-        signInButton.click();
-        return new LoginPage();
-    }
-
     public void checkSuccessfulRegistration(String congratulation) {
         congratulationMessage.shouldHave(text(congratulation));
+    }
+
+    public void checkUnsuccessfulRegistrationWithExistUserName(String text) {
+        errorMessage.shouldHave(text(text));
+    }
+
+    public void checkUnsuccessfulRegistrationIfPasswordAndConfirmPasswordAreNotEqual(String text) {
+        errorMessage.shouldBe(text(text));
     }
 }
