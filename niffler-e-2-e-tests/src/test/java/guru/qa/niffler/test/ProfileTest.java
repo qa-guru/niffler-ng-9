@@ -3,6 +3,7 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
@@ -20,6 +21,7 @@ public class ProfileTest {
             username = "test1",
             archived = true
     )
+    @DisabledByIssue("3")
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
         Selenide.open(CFG.frontUrl(), LoginPage.class)
