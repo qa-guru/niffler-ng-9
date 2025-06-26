@@ -1,9 +1,9 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.utils.StringUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -19,7 +19,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 .ifPresent(anno -> {
                     CategoryJson categoryJson = new CategoryJson(
                             null,
-                            getCategoryName(),
+                            StringUtils.getRandomName(),
                             anno.username(),
                             false
                     );
@@ -49,11 +49,6 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(CategoryExtension.CATEGORY_NAMESPACE).get(extensionContext.getUniqueId(),
                 CategoryJson.class);
-    }
-
-    private String getCategoryName() {
-        Faker faker = new Faker();
-        return faker.funnyName().name();
     }
 
     @Override

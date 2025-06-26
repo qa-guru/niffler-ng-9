@@ -36,7 +36,7 @@ public class LoginTest {
     loginPage
             .fillLoginPage(userName, password)
             .submit()
-            .verifyMainPageOpened();
+            .verifyLoaded();
   }
 
   @DisplayName("Пользователь должен остаться на странице авторизации после неуспешной авторизации")
