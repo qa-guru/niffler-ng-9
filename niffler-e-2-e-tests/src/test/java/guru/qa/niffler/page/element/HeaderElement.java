@@ -1,6 +1,8 @@
 package guru.qa.niffler.page.element;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.AllPeoplePage;
+import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.ProfilePage;
 
 import static com.codeborne.selenide.Condition.text;
@@ -15,5 +17,17 @@ public class HeaderElement {
         openProfileBtn.click();
         profileMenu.$$("li").find(text("Profile")).click();
         return new ProfilePage();
+    }
+
+    public AllPeoplePage openAllPeoplePageFromHeader(){
+        openProfileBtn.click();
+        profileMenu.$$("li").find(text("All People")).click();
+        return new AllPeoplePage();
+    }
+
+    public FriendsPage openFriendsPageFromHeader(){
+        openProfileBtn.click();
+        profileMenu.$$("li").find(text("Friends")).click();
+        return new FriendsPage();
     }
 }
