@@ -9,75 +9,98 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+
+import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 
 public class UsersQueueExtension implements BeforeEachCallback,
         AfterEachCallback,
         ParameterResolver {
 
     public final static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
+    private static final String userPassword = "secret";
 
-    public record StaticUser(String username, String password, boolean empty) {}
+    public record StaticUser(
+            String username,
+            String password,
+            String friend,
+            String income,
+            String outcome
+    ) {}
 
     private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();
-    private static final Queue<StaticUser> NOT_EMPTY_USERS = new ConcurrentLinkedQueue<>();
+    private static final Queue<StaticUser> WITH_FRIEND_USERS = new ConcurrentLinkedQueue<>();
+    private static final Queue<StaticUser> WITH_INCOME_REQUESTS_USERS = new ConcurrentLinkedQueue<>();
+    private static final Queue<StaticUser> WITH_OUTCOME_REQUESTS_USERS = new ConcurrentLinkedQueue<>();
 
     static{
-        EMPTY_USERS.add(new StaticUser("test2", "secret", true));
-        NOT_EMPTY_USERS.add(new StaticUser("test1", "secret", false));
-        NOT_EMPTY_USERS.add(new StaticUser("test3", "secret", false));
+        EMPTY_USERS.add(new StaticUser("user_without_friends", userPassword, null, null, null));
+        WITH_FRIEND_USERS.add(new StaticUser("user_with_friend", userPassword, "test1", null, null));
+        WITH_INCOME_REQUESTS_USERS.add(new StaticUser("user_with_income", userPassword, null, "test1", null));
+        WITH_OUTCOME_REQUESTS_USERS.add(new StaticUser("user_with_outcome", userPassword, null, null, "test1"));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
     public @interface UserType {
-        boolean isEmpty() default true;
+        Type value() default EMPTY;
+
+        enum Type {
+            EMPTY, WITH_FRIEND, WITH_INCOME_REQUEST, WITH_OUTCOME_REQUEST
+        }
+    }
+
+    private Queue<StaticUser> getQueueByUserType(UserType userType) {
+        return switch (userType.value()) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUESTS_USERS;
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUESTS_USERS;
+        };
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
+        Map<UserType, Queue<StaticUser>> usersMap = new HashMap<>();
+
         Arrays.stream(context.getRequiredTestMethod().getParameters())
                 .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
-                .findFirst()
                 .map(p -> p.getAnnotation(UserType.class))
-                .ifPresent(
-                        ut -> {
+                .forEach(
+                        userType -> {
                             Optional<StaticUser> user = Optional.empty();
                             StopWatch sw = StopWatch.createStarted();
                             while(user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                                user = ut.isEmpty()
-                                        ? Optional.ofNullable(EMPTY_USERS.poll())
-                                        : Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                                user = Optional.ofNullable(getQueueByUserType(userType).poll());
                             }
                             Allure.getLifecycle().updateTestCase(testCase -> {
                                     testCase.setStart(new Date().getTime());
                             });
                             user.ifPresentOrElse(
-                                    u -> {
-                                        context.getStore(NAMESPACE)
-                                                .put(
-                                                    context.getUniqueId(),
-                                                    u
-                                        );
-                                    },
-                            () -> new IllegalStateException("Can't find user after 30 sec")
+                                    u -> usersMap.computeIfAbsent(userType, k -> new ConcurrentLinkedQueue<>()).add(u),
+                                    () -> {throw new IllegalStateException("Can`t obtain user after 30s.");}
                             );
-                        }
-                );
+                        });
+        context.getStore(NAMESPACE).put(
+                context.getUniqueId(),
+                usersMap
+        );
 
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        StaticUser user = context.getStore(NAMESPACE).get(context.getUniqueId(), StaticUser.class);
-        if(user.empty()){
-            EMPTY_USERS.add(user);
-        } else NOT_EMPTY_USERS.add(user);
+        Map<UserType, Queue<StaticUser>> usersMap = context.getStore(NAMESPACE).get(
+                context.getUniqueId(),
+                Map.class
+        );
+        for (Map.Entry<UserType, Queue<StaticUser>> entry : usersMap.entrySet()) {
+            for (StaticUser user : entry.getValue()) {
+                getQueueByUserType(entry.getKey()).add(user);
+            }
+        }
     }
 
     @Override
@@ -88,6 +111,13 @@ public class UsersQueueExtension implements BeforeEachCallback,
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), StaticUser.class);
+        HashMap<UserType, Queue<StaticUser>> users = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), HashMap.class);
+        UserType annotation = parameterContext.getParameter().getAnnotation(UserType.class);
+
+        if (users == null || !users.containsKey(annotation)) {
+            throw new IllegalStateException("Can`t find user in queue");
+        }
+
+        return users.get(annotation).poll();
     }
 }
