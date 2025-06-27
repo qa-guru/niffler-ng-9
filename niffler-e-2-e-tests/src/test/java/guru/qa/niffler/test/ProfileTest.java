@@ -1,18 +1,15 @@
 package guru.qa.niffler.test;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(UsersQueueExtension.class)
+import static com.codeborne.selenide.Selenide.*;
+
 public class ProfileTest {
 
     private static final Config CFG = Config.getInstance();
@@ -21,10 +18,11 @@ public class ProfileTest {
             username = "test1",
             archived = true
     )
-    @DisabledByIssue("3")
     @Test
+    @DisabledByIssue("3")
+    @DisplayName("Archived category should be present in categories list on profile page")
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage("test1", "secret")
                 .submit()
                 .checkThatPageLoaded()
@@ -34,13 +32,14 @@ public class ProfileTest {
     }
 
     @Category(
-            username = "test2",
+            username = "test1",
             archived = false
     )
     @Test
-    void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson, @UserType(isEmpty = true) StaticUser user){
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage(user.username(), user.password())
+    @DisplayName("Active category should be present in categories list on profile page")
+    void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
+        open(CFG.frontUrl(), LoginPage.class)
+                .fillLoginPage("test1", "secret")
                 .submit()
                 .checkThatPageLoaded()
                 .openProfilePageFromHeader()
