@@ -3,6 +3,7 @@ package guru.qa.niffler.test;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +15,11 @@ public class ProfileTest {
 
     private static final Config CFG = Config.getInstance();
 
-    @Category(
+    @User(
             username = "test1",
-            archived = true
+            categories = @Category(
+                    archived = true
+            )
     )
     @Test
     @DisabledByIssue("3")
@@ -31,9 +34,11 @@ public class ProfileTest {
                 .checkArchivedCategory(categoryJson.name());
     }
 
-    @Category(
+    @User(
             username = "test1",
-            archived = false
+            categories = @Category(
+                    archived = false
+            )
     )
     @Test
     @DisplayName("Active category should be present in categories list on profile page")
