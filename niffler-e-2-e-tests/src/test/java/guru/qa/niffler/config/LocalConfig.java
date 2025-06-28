@@ -28,4 +28,14 @@ enum LocalConfig implements Config {
     return "http://127.0.0.1:3000/profile";
   }
 
+  @Override
+  public String friendsPageUrl() {
+    return "http://127.0.0.1:3000/friends";
+  }
+
+  @Override
+  public String allPeoplePageUrl() {
+    return "http://127.0.0.1:3000/people/all";
+  }
+
 }
