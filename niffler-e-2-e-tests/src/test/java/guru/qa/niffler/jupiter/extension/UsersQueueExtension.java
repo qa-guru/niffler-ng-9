@@ -42,7 +42,7 @@ public class UsersQueueExtension implements
     EMPTY_USERS.add(new StaticUser("bee", "12345", null, null, null));
     WITH_FRIEND_USERS.add(new StaticUser("duck", "12345", "dima", null, null));
     WITH_INCOME_REQUEST_USERS.add(new StaticUser("dima", "12345", null, "bee", null));
-    WITH_OUTCOME_REQUEST_USERS.add(new StaticUser("barsik", "12345", null, null, "bill"));
+    WITH_OUTCOME_REQUEST_USERS.add(new StaticUser("barsik", "12345", null, null, "bee"));
   }
 
   @Target(ElementType.PARAMETER)
