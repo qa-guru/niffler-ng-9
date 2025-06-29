@@ -30,7 +30,7 @@ enum LocalConfig implements Config {
 
   @Override
   public String friendsPageUrl() {
-    return "http://127.0.0.1:3000/friends";
+    return "http://127.0.0.1:3000/people/friends";
   }
 
   @Override

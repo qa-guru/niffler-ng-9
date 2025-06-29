@@ -38,7 +38,7 @@ public class UsersQueueExtension implements
         EMPTY_USERS.add(new StaticUser(
                 "testUser1", "12345", null, null, null));
         WITH_FRIEND_USERS.add(new StaticUser(
-                "testUser2", "23456", "testUser4", null, null));
+                "testUser4", "45678", "testUser2", null, null));
         WITH_INCOME_REQUEST_USERS.add(new StaticUser(
                 "testUser3", "34567", null, "testUser2", null));
         WITH_OUTCOME_REQUEST_USERS.add(new StaticUser(
@@ -67,7 +67,7 @@ public class UsersQueueExtension implements
                             Optional<StaticUser> user = Optional.empty();
                             StopWatch sw = StopWatch.createStarted();
                             while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                                user = Optional.ofNullable(getQueueByUserType(ut).poll());
+                                user = Optional.ofNullable(getQueueByType(ut.value()).poll());
                             }
                             Allure.getLifecycle().updateTestCase(testCase ->
                                     testCase.setStart(new Date().getTime())
@@ -86,16 +86,18 @@ public class UsersQueueExtension implements
                 );
     }
 
-
     @Override
     public void afterEach(ExtensionContext context) {
-        Map<UsersQueueExtension.UserType, Queue<UsersQueueExtension.StaticUser>> usersMap = context.getStore(NAMESPACE).get(
-                context.getUniqueId(),
-                Map.class
-        );
-        for (Map.Entry<UsersQueueExtension.UserType, Queue<UsersQueueExtension.StaticUser>> entry : usersMap.entrySet()) {
-            for (UsersQueueExtension.StaticUser user : entry.getValue()) {
-                getQueueByUserType(entry.getKey()).add(user);
+        Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
+        if (map != null) {
+            for (Map.Entry<UserType, StaticUser> element : map.entrySet()) {
+                getQueueByType(element.getKey().value()).add(element.getValue());
+                switch (element.getKey().value()) {
+                    case EMPTY -> EMPTY_USERS.add(element.getValue());
+                    case WITH_FRIEND -> WITH_FRIEND_USERS.add(element.getValue());
+                    case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(element.getValue());
+                    case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(element.getValue());
+                }
             }
         }
     }
@@ -107,14 +109,14 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public UsersQueueExtension.StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext
+    public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext
             extensionContext) throws ParameterResolutionException {
-        Map<UsersQueueExtension.UserType, UsersQueueExtension.StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
-        return map.get(parameterContext.getParameter().getAnnotation(UsersQueueExtension.UserType.class));
+        Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
+        return map.get(parameterContext.getParameter().getAnnotation(UserType.class));
     }
 
-    private Queue<StaticUser> getQueueByUserType(UserType userType) {
-        return switch (userType.value()) {
+    private Queue<StaticUser> getQueueByType(UserType.Type userType) {
+        return switch (userType) {
             case EMPTY -> EMPTY_USERS;
             case WITH_FRIEND -> WITH_FRIEND_USERS;
             case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
