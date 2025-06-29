@@ -9,8 +9,11 @@ import static com.codeborne.selenide.Selenide.$x;
 
 public class MainPage {
     private final SelenideElement spendingTable = $("#spendings");
-    private final SelenideElement staticsTitle = $("//h2[text()='History of Spendings']");
+    private final SelenideElement staticsTitle = $x("//h2[text()='History of Spendings']");
     private final SelenideElement historyTitle = $x("//h2[text()='Statistics']");
+    private final SelenideElement personIcon = $x("//button//*[@data-testid='PersonIcon']");
+    private final SelenideElement goToProfile = $x("//a[text()='Profile']");
+
 
     public MainPage checkThatPageLoaded() {
         spendingTable.should(visible);
@@ -31,13 +34,23 @@ public class MainPage {
         return this;
     }
 
-    public MainPage checkWhatTitleStaticsIsVisible() {
+    public MainPage checkThatTitleStaticsIsVisible() {
         staticsTitle.shouldBe(visible);
         return this;
     }
 
-    public MainPage checkWhatTitleHistoryIsVisible() {
+    public MainPage checkThatTitleHistoryIsVisible() {
         historyTitle.shouldBe(visible);
         return this;
+    }
+
+    public MainPage clickToPersonalIcon() {
+        personIcon.click();
+        return this;
+    }
+
+    public ProfilePage goToProfile() {
+        goToProfile.click();
+        return new ProfilePage();
     }
 }
