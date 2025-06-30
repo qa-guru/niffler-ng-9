@@ -13,9 +13,12 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
 
+import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
+
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
   @Override
@@ -54,6 +57,12 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
 
   @Override
   public SpendJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), SpendJson.class);
+    return createdSpending();
+  }
+
+  public static SpendJson createdSpending() {
+    final ExtensionContext methodContext = context();
+    return methodContext.getStore(NAMESPACE)
+        .get(methodContext.getUniqueId(), SpendJson.class);
   }
 }
