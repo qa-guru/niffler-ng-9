@@ -31,12 +31,12 @@ public class LoginPage {
         return new RegisterPage();
     }
 
-    public LoginPage titleLogInIsVisible() {
+    public LoginPage checkTitleIsVisible() {
         logInTitle.shouldBe(visible);
         return this;
     }
 
-    public void badCredentialsErrorIsVisible() {
+    public void checkBadCredentialsErrorIsVisible() {
         badCredentialsErrorMessage.shouldBe(visible);
     }
 }

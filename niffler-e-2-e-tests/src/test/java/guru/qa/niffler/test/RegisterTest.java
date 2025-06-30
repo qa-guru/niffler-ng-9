@@ -26,7 +26,6 @@ public class RegisterTest {
     @Test
     @Description("Проверяем успешную регистрацию")
     void shouldRegisterNewUser() {
-
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .goToRegistration()
                 .setUserName(userName)

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class LoginTest {
 
-    LoginPage loginPage = new LoginPage();
+    private final LoginPage loginPage = new LoginPage();
     private static final Config CFG = Config.getInstance();
 
     @Test
@@ -29,6 +29,6 @@ public class LoginTest {
                 .fillLoginPage("87897", "780870")
                 .submit();
 
-        loginPage.titleLogInIsVisible().badCredentialsErrorIsVisible();
+        loginPage.checkTitleIsVisible().checkBadCredentialsErrorIsVisible();
     }
 }
