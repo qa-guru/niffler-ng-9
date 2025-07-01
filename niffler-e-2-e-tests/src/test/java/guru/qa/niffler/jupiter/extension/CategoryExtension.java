@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
+    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
     private static final Faker faker = new Faker();
 

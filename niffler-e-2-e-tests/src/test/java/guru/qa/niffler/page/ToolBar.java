@@ -41,4 +41,9 @@ public class ToolBar {
         profileLink.shouldBe(enabled).click();
         return page(ProfilePage.class);
     }
+
+    public FriendsPage clickFriendsLink() {
+        friendsLink.shouldBe(enabled).click();
+        return new FriendsPage();
+    }
 }
