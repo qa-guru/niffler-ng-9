@@ -26,7 +26,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
         User.class
     ).ifPresent(
             userAnnotation -> {
-                if(userAnnotation != null && userAnnotation.spendings().length != 0){
+                if(userAnnotation.spendings().length != 0){
                     Spending spending = userAnnotation.spendings()[0];
                     SpendJson spendJson = new SpendJson(
                             null,
