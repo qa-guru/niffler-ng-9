@@ -79,7 +79,8 @@ public class UsersQueueExtension implements BeforeEachCallback,
                                     testCase.setStart(new Date().getTime());
                             });
                             user.ifPresentOrElse(
-                                    u -> usersMap.computeIfAbsent(userType, k -> new ConcurrentLinkedQueue<>()).add(u),
+                                    u -> usersMap.computeIfAbsent(userType,
+                                            k -> new ConcurrentLinkedQueue<>()).add(u),
                                     () -> {throw new IllegalStateException("Can`t obtain user after 30s.");}
                             );
                         });
@@ -87,19 +88,20 @@ public class UsersQueueExtension implements BeforeEachCallback,
                 context.getUniqueId(),
                 usersMap
         );
-
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
         Map<UserType, Queue<StaticUser>> usersMap = context.getStore(NAMESPACE).get(
                 context.getUniqueId(),
-                Map.class
+                HashMap.class
         );
         for (Map.Entry<UserType, Queue<StaticUser>> entry : usersMap.entrySet()) {
-            for (StaticUser user : entry.getValue()) {
-                getQueueByUserType(entry.getKey()).add(user);
-            }
+            if(!entry.getValue().isEmpty()){
+                for (StaticUser user : entry.getValue()) {
+                    getQueueByUserType(entry.getKey()).add(user);
+                }
+            } else throw new NullPointerException("No users were found in queue");
         }
     }
 
@@ -111,13 +113,14 @@ public class UsersQueueExtension implements BeforeEachCallback,
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        HashMap<UserType, Queue<StaticUser>> users = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), HashMap.class);
+        HashMap<UserType, Queue<StaticUser>> usersMap = extensionContext.getStore(NAMESPACE).get(
+                extensionContext.getUniqueId(),
+                HashMap.class);
         UserType annotation = parameterContext.getParameter().getAnnotation(UserType.class);
 
-        if (users == null || !users.containsKey(annotation)) {
-            throw new IllegalStateException("Can`t find user in queue");
-        }
-
-        return users.get(annotation).poll();
+        if (usersMap != null && usersMap.containsKey(annotation)) {
+            usersMap.get(annotation).add(usersMap.get(annotation).peek());
+            return usersMap.get(annotation).poll();
+        } else throw new IllegalStateException("User is not present in current Queue");
     }
 }

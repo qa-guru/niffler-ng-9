@@ -12,13 +12,12 @@ import static com.codeborne.selenide.Selenide.*;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.*;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 
-@ExtendWith({BrowserExtension.class})
+@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
 public class FriendsWebTest {
 
     private static final Config CFG = Config.getInstance();
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Friends table should be empty for new user")
     void friendsTableShouldBeEmptyForNewUser(@UserType() StaticUser user) {
         open(CFG.frontUrl(), LoginPage.class)
@@ -30,7 +29,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Friend should be present in friends table")
     void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
         open(CFG.frontUrl(), LoginPage.class)
@@ -42,7 +40,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Income invitation should be present in friends table")
     void incomeInvitationShouldBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
         open(CFG.frontUrl(), LoginPage.class)
@@ -54,7 +51,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     @DisplayName("Outcome invitation should be present in friends table")
     void outcomeInvitationShouldBePresentInAllPeopleTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
         open(CFG.frontUrl(), LoginPage.class)
