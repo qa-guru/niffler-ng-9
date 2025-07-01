@@ -34,4 +34,14 @@ public class MainPage {
     headerElement.openProfilePageFromHeader();
     return new ProfilePage();
   }
+
+  public FriendsPage openFriendsPageFromHeader(){
+    headerElement.openFriendsPageFromHeader();
+    return new FriendsPage();
+  }
+
+  public AllPeoplePage openAllPeoplePageFromHeader(){
+    headerElement.openAllPeoplePageFromHeader();
+    return new AllPeoplePage();
+  }
 }
