@@ -13,10 +13,10 @@ import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 
 @ExtendWith(BrowserExtension.class)
+@ExtendWith(UsersQueueExtension.class)
 public class FriendsTest {
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
         login(user.username(), user.password());
         FriendsPage.open()
@@ -24,7 +24,6 @@ public class FriendsTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
         login(user.username(), user.password());
         FriendsPage.open()
@@ -32,7 +31,6 @@ public class FriendsTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
         login(user.username(), user.password());
         FriendsPage.open()
@@ -40,7 +38,6 @@ public class FriendsTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
         login(user.username(), user.password());
         PeoplePage.open()

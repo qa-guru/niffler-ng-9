@@ -92,14 +92,17 @@ public class UsersQueueExtension implements
         if (map != null) {
             for (Map.Entry<UserType, StaticUser> element : map.entrySet()) {
                 getQueueByType(element.getKey().value()).add(element.getValue());
-                switch (element.getKey().value()) {
-                    case EMPTY -> EMPTY_USERS.add(element.getValue());
-                    case WITH_FRIEND -> WITH_FRIEND_USERS.add(element.getValue());
-                    case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(element.getValue());
-                    case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(element.getValue());
-                }
             }
         }
+    }
+
+    private Queue<StaticUser> getQueueByType(UserType.Type userType) {
+        return switch (userType) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
+        };
     }
 
     @Override
@@ -115,12 +118,4 @@ public class UsersQueueExtension implements
         return map.get(parameterContext.getParameter().getAnnotation(UserType.class));
     }
 
-    private Queue<StaticUser> getQueueByType(UserType.Type userType) {
-        return switch (userType) {
-            case EMPTY -> EMPTY_USERS;
-            case WITH_FRIEND -> WITH_FRIEND_USERS;
-            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
-            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
-        };
-    }
 }

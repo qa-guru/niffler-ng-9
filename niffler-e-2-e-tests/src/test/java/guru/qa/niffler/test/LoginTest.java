@@ -15,11 +15,11 @@ public class LoginTest {
   private static final Config CFG = Config.getInstance();
   private final String userName = "testUser2";
   private final String password = "23456";
-  private LoginPage loginPage;
+  private final LoginPage loginPage = new LoginPage();
 
   @BeforeEach
   void setUp() {
-    loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
+    Selenide.open(CFG.frontUrl(), LoginPage.class);
   }
 
   @Test
