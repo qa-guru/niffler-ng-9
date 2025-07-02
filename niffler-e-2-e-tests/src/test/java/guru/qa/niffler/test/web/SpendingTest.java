@@ -14,12 +14,15 @@ public class SpendingTest {
 
   private static final Config CFG = Config.getInstance();
 
-  @Spending(
-      username = "marina",
-      amount = 89990.00,
-      description = "Advanced 9 поток!",
-      category = "Обучение"
+  @User(
+          username = "duck",
+          spendings = @Spending(
+                  amount = 89990.00,
+                  description = "Advanced 9 поток!",
+                  category = "Обучение"
+          )
   )
+
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
     final String newDescription = ":)";

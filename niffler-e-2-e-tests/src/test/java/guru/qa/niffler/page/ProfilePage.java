@@ -37,7 +37,7 @@ public class ProfilePage {
         menu.shouldBe(visible);
         profileButton.click();
         $x(String.format("//*[@id='username' and (contains(@value, '%s'))]", username)).shouldBe(visible);
-        return profilePage;
+        return this;
     }
   public ProfilePage setName(String name) {
     nameInput.clear();
@@ -48,7 +48,7 @@ public class ProfilePage {
     public ProfilePage addCategory(String name) {
         category.setValue(name).pressEnter();
         $x(String.format("//*[text()='%s']", name)).shouldBe(visible);
-        return profilePage;
+        return this;
     }
   public ProfilePage uploadPhotoFromClasspath(String path) {
     photoInput.uploadFromClasspath(path);
@@ -60,7 +60,7 @@ public class ProfilePage {
                 .click();
         archiveButton.click();
         $x(String.format("//*[text()='Category %s is archived']", name)).shouldBe(visible);
-        return profilePage;
+        return this;
     }
 
     public ProfilePage unarchiveCategory(String name) {
@@ -69,7 +69,7 @@ public class ProfilePage {
                 .click();
         unarchiveButton.click();
         $x(String.format("//*[text()='Category %s is unarchived']", name)).shouldBe(visible);
-        return profilePage;
+        return this;
     }
   public ProfilePage checkCategoryExists(String category) {
     bubbles.find(text(category)).shouldBe(visible);
@@ -80,13 +80,13 @@ public class ProfilePage {
         showArchivedSwitch.click();
         $x(String.format("//*[text()='%s']", name))
                 .shouldBe(visible);
-        return profilePage;
+        return this;
     }
 
     public ProfilePage checkCategoryIsVisible(String name) {
         $x(String.format("//*[text()='%s']", name))
                 .shouldBe(visible);
-        return profilePage;
+        return this;
     }
   public ProfilePage checkUsername(String username) {
     this.userName.should(value(username));
@@ -112,4 +112,10 @@ public class ProfilePage {
     submitButton.click();
     return this;
   }
+
+    public ProfilePage checkArchivedCategoryExists(String category) {
+        archivedSwitcher.click();
+        bubblesArchived.find(text(category)).shouldBe(visible);
+        return this;
+    }
 }
