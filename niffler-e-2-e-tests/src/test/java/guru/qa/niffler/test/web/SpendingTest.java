@@ -17,6 +17,7 @@ public class SpendingTest {
   @User(
           username = "duck",
           spendings = @Spending(
+                  username = "marina",
                   amount = 89990.00,
                   description = "Advanced 9 поток!",
                   category = "Обучение"
