@@ -7,6 +7,8 @@ import guru.qa.niffler.utils.GeneratorUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.utils.GeneratorUtils.generateUniqueUsername;
+
 public class RegistrationTest {
     RegisterPage registerPage = new RegisterPage();
     String password = "123456";
@@ -15,10 +17,10 @@ public class RegistrationTest {
 
     @Test
     void shouldRegisterNewUser() {
-        String userName = new GeneratorUtils().generateUniqueUsername();
+        String userName = generateUniqueUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password)
-                .isRegistrationSuccessful();
+                .checkRegistrationSuccessful();
     }
 
     @Test
@@ -26,10 +28,10 @@ public class RegistrationTest {
         String userName = new GeneratorUtils().generateUniqueUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password)
-                .isRegistrationSuccessful();
+                .checkRegistrationSuccessful();
         registerPage.openPage()
                 .registerNewUser(userName, password, password)
-                .isErrorUserRegisteredShown(userName);
+                .checkErrorUserRegisteredShown(userName);
 
     }
 
@@ -38,7 +40,7 @@ public class RegistrationTest {
         String userName = new GeneratorUtils().generateUniqueUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password + "1")
-                .isErrorPasswordsDontCoincideShown();
+                .checkErrorPasswordsDontCoincideShown();
     }
 
     @AfterAll

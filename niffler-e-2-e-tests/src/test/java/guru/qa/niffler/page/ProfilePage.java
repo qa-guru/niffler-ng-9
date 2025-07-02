@@ -24,12 +24,17 @@ public class ProfilePage {
         return this;
     }
 
-    public boolean isCategoryShown(String categoryName) {
+    public ProfilePage checkCategoryShown(String categoryName) {
         SelenideElement categoryElement = $x(categoryLabel.formatted(categoryName));
-        if (categoryElement.is(visible)) {
-            return true;
-        }
-        else return false;
+        categoryElement.should(visible);
+        return this;
+
+    }
+
+    public ProfilePage checkCategoryNotShown(String categoryName) {
+        SelenideElement categoryElement = $x(categoryLabel.formatted(categoryName));
+        categoryElement.shouldNot(visible);
+        return this;
 
     }
 }

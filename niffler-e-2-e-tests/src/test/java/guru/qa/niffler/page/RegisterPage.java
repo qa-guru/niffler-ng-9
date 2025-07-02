@@ -8,7 +8,6 @@ import static com.codeborne.selenide.Condition.clickable;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegisterPage {
     private final SelenideElement usernameInput = $("#username");
@@ -53,8 +52,8 @@ public class RegisterPage {
                 .submitRegistration();
     }
 
-    public RegisterPage isRegistrationSuccessful() {
-        assertTrue(registrationSuccessfulLabel.isDisplayed());
+    public RegisterPage checkRegistrationSuccessful() {
+        registrationSuccessfulLabel.should(visible);
         return this;
     }
 
@@ -63,13 +62,13 @@ public class RegisterPage {
         return new LoginPage();
     }
 
-    public RegisterPage isErrorUserRegisteredShown(String username) {
+    public RegisterPage checkErrorUserRegisteredShown(String username) {
         SelenideElement errorMessage = $x(errorUserRegisteredLabel.formatted(username));
         errorMessage.shouldBe(visible);
         return this;
     }
 
-    public RegisterPage isErrorPasswordsDontCoincideShown() {
+    public RegisterPage checkErrorPasswordsDontCoincideShown() {
         errorPasswordsCoincideLabel.shouldBe(visible);
         return this;
     }

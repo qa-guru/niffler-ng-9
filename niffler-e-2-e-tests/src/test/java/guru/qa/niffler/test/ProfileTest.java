@@ -6,7 +6,6 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
 
 public class ProfileTest {
     ProfilePage profilePage = new ProfilePage();
@@ -18,13 +17,13 @@ public class ProfileTest {
             archived = true
     )
     @Test
-    void archivedCategoryShouldPresentInCategoriesList(CategoryJson category){
+    void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category){
         loginPage.openPage()
                 .fillLoginPage(category.username(), CFG.defaultPassword())
                 .submit();
         profilePage.openPage()
-                .verifyOpened();
-        Assert.isTrue(profilePage.isCategoryShown(category.name()), "Archived category shown");
+                .verifyOpened()
+                .checkCategoryNotShown(category.name());
 
     }
 
@@ -38,6 +37,6 @@ public class ProfileTest {
                 .submit();
         profilePage.openPage()
                 .verifyOpened()
-                .isCategoryShown(category.name());
+                .checkCategoryShown(category.name());
     }
 }

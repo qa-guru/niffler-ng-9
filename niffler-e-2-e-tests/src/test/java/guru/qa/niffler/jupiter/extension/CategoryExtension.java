@@ -7,10 +7,12 @@ import guru.qa.niffler.utils.GeneratorUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import static guru.qa.niffler.utils.GeneratorUtils.generateUniqueCategoryName;
+
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
-    private final GeneratorUtils generator = new GeneratorUtils();
+
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(
@@ -18,12 +20,12 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 Category.class
         ).ifPresent(
                 anno -> {
-                    String categoryName = generator.generateUniqueCategoryName();
+                    String categoryName = generateUniqueCategoryName();
                     CategoryJson categoryJson = new CategoryJson(
                             null,
                             categoryName,
                             anno.username(),
-                            anno.archived()
+                            false
                     );
                     CategoryJson created = spendApiClient.addCategory(categoryJson);
                     if (anno.archived( )) {
