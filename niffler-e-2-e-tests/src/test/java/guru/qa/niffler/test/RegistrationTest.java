@@ -1,82 +1,52 @@
 package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
-import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import org.junit.jupiter.api.BeforeEach;
+import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.page.Pages.*;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 @ExtendWith(BrowserExtension.class)
 public class RegistrationTest {
 
     private static final Config CFG = Config.getInstance();
 
-    Faker faker = new Faker();
-
-    String username;
-    String password;
-
-    @BeforeEach
-    public void setup() {
-        username = faker.name().username();
-        password = faker.number().digits(6);
-    }
-
     @Test
     void shouldRegisterNewUser() {
-        Selenide.open(CFG.frontUrl());
-        loginPage.createNewUserButton();
-        registeredPage
-                .setUsername(username)
-                .setPassword(password)
-                .setPasswordSubmit(password)
-                .submitRegistration()
-                .checkSuccessRegistered();
+        String newUsername = randomUsername();
+        String password = "12345";
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doRegister()
+                .fillRegisterPage(newUsername, password, password)
+                .successSubmit()
+                .successLogin(newUsername, password)
+                .checkThatPageLoaded();
     }
 
     @Test
-    void shouldNotRegisterUserWithExistingUserName() {
-        Selenide.open(CFG.frontUrl());
-        loginPage.createNewUserButton();
-        registeredPage
-                .setUsername("marina")
-                .setPassword(password)
-                .setPasswordSubmit(password)
-                .submitRegistration()
-                .checkFailedUserRegistered("marina");
+    void shouldNotRegisterUserWithExistingUsername() {
+        String existingUsername = "duck";
+        String password = "12345";
+
+        LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
+        loginPage.doRegister()
+                .fillRegisterPage(existingUsername, password, password)
+                .submit();
+        loginPage.checkError("Username `" + existingUsername + "` already exists");
     }
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-        Selenide.open(CFG.frontUrl());
-        loginPage.createNewUserButton();
-        registeredPage
-                .setUsername("marina")
-                .setPassword(password)
-                .setPasswordSubmit("12345")
-                .submitRegistration()
-                .checkFailedPasswordRegistered();
-    }
+        String newUsername = randomUsername();
+        String password = "12345";
 
-    @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin() {
-        Selenide.open(CFG.frontUrl());
-        loginPage
-                .fillLoginPage("marina", "052322")
+        LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
+        loginPage.doRegister()
+                .fillRegisterPage(newUsername, password, "bad password submit")
                 .submit();
-        loginPage.checkSuccessLogin();
-    }
-
-    @Test
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        Selenide.open(CFG.frontUrl());
-        loginPage
-                .fillLoginPage("marina", "12345")
-                .submit();
-        loginPage.checkFailedLogin();
+        loginPage.checkError("Passwords should be equal");
     }
 }
