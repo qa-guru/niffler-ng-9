@@ -13,37 +13,40 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
 
+//3.2 lesson 06:58
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext
+          .Namespace
+          .create(SpendingExtension.class);
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(
-        context.getRequiredTestMethod(),
-        Spending.class
+            context.getRequiredTestMethod(),
+            Spending.class
     ).ifPresent(
-        anno -> {
-          SpendJson spendJson = new SpendJson(
-              null,
-              new Date(),
-              new CategoryJson(
-                  null,
-                  anno.category(),
-                  anno.username(),
-                  false
-              ),
-              anno.currency(),
-              anno.amount(),
-              anno.description(),
-              anno.username()
-          );
-          context.getStore(NAMESPACE).put(
-              context.getUniqueId(),
-              spendApiClient.addSpend(spendJson)
-          );
-        }
+            anno -> {
+              SpendJson spendJson = new SpendJson(
+                      null,
+                      new Date(),
+                      new CategoryJson(
+                              null,
+                              anno.category(),
+                              anno.username(),
+                              false
+                      ),
+                      anno.currency(),
+                      anno.amount(),
+                      anno.description(),
+                      anno.username()
+              );
+              context.getStore(NAMESPACE).put(
+                      context.getUniqueId(),
+                      spendApiClient.addSpend(spendJson)
+              );
+            }
     );
   }
 

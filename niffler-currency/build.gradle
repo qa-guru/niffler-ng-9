@@ -29,7 +29,7 @@ dependencies {
 
 jib {
     container {
-        ports = ['8091', '8092']
+        ports = ['8091', '8099']
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = [
                 'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),

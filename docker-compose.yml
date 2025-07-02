@@ -75,7 +75,7 @@ services:
     image: ${PREFIX}/niffler-currency-docker:latest
     ports:
       - 8091:8091
-      - 8092:8092
+      - 8099:8099
     environment:
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always

@@ -9,4 +9,5 @@ public interface Config {
   String frontUrl();
 
   String spendUrl();
+
 }

@@ -7,9 +7,9 @@ services:
       - ./niffler-grpc-common/src/main/proto:/proto   #proto
     ports:
       - 8888:8888                                     # wiremock port
-      - 8092:8092                                     # gRPC port
+      - 8099:8099                                     # gRPC port
     environment:
-      - GRPC_SERVER_PORT=8092
+      - GRPC_SERVER_PORT=8099
     networks:
       - niffler-network
 

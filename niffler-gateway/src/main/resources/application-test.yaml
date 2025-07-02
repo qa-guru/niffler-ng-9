@@ -19,5 +19,5 @@ niffler-gateway:
 grpc:
   client:
     grpcCurrencyClient:
-      address: 'static://localhost:8092'
+      address: 'static://localhost:8099'
       negotiationType: PLAINTEXT

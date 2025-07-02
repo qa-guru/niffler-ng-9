@@ -56,7 +56,7 @@ spring:
 grpc:
   client:
     grpcCurrencyClient:
-      address: 'static://localhost:8092'
+      address: 'static://localhost:8099'
       negotiationType: PLAINTEXT
 
 niffler-currency:
@@ -80,7 +80,7 @@ spring:
 grpc:
   client:
     grpcCurrencyClient:
-      address: 'static://currency.niffler.dc:8092'
+      address: 'static://currency.niffler.dc:8099'
       negotiationType: PLAINTEXT
 
 niffler-currency:
