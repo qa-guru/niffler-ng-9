@@ -9,7 +9,19 @@ enum LocalConfig implements Config {
   }
 
   @Override
+  public String authUrl() {
+    return "http://127.0.0.1:9000/";
+  }
+
+  @Override
   public String spendUrl() {
     return "http://127.0.0.1:8093/";
   }
+
+  @Override
+  public String defaultUser() {return "duck";} //should be moved to secret resource
+
+  @Override
+  public String defaultPassword() {return "12345";} //should be moved to secret resource
+
 }

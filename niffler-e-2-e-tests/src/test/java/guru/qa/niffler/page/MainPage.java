@@ -8,9 +8,13 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement statComponent = $("#stat");
+  private final SelenideElement profileIcon = $("[data-testid='PersonIcon']");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
+    statComponent.should(visible);
+    profileIcon.shouldBe(visible);
     return this;
   }
 

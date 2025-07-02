@@ -9,4 +9,7 @@ public interface Config {
   String frontUrl();
 
   String spendUrl();
+  String authUrl();
+  String defaultUser();
+  String defaultPassword();
 }
