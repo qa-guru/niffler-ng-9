@@ -15,19 +15,21 @@ public class SpendingTest {
   private static final Config CFG = Config.getInstance();
 
   @User(
-      username = "duck",
-      spendings = @Spending(
-          amount = 89990.00,
-          description = "Advanced 9 поток!",
-          category = "Обучение"
-      )
+          username = "duck",
+          spendings = @Spending(
+                  amount = 89990.00,
+                  description = "Advanced 9 поток!",
+                  category = "Обучение"
+          )
   )
+
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
+        .fillLoginPage("marina", "052322")
+        .submit()
         .checkThatPageLoaded()
         .editSpending(spendJson.description())
         .setNewSpendingDescription(newDescription)
