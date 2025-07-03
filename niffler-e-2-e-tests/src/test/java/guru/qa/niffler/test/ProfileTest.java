@@ -1,0 +1,42 @@
+package guru.qa.niffler.test;
+
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
+import org.junit.jupiter.api.Test;
+
+public class ProfileTest {
+    ProfilePage profilePage = new ProfilePage();
+    LoginPage loginPage = new LoginPage();
+    private static final Config CFG = Config.getInstance();
+
+    @Category(
+            username = "duck",
+            archived = true
+    )
+    @Test
+    void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category){
+        loginPage.openPage()
+                .fillLoginPage(category.username(), CFG.defaultPassword())
+                .submit();
+        profilePage.openPage()
+                .verifyOpened()
+                .checkCategoryNotShown(category.name());
+
+    }
+
+    @Category(
+            username = "duck",
+            archived = false)
+    @Test
+    void activeCategoryShouldPresentInCategoriesList(CategoryJson category){
+        loginPage.openPage()
+                .fillLoginPage(category.username(), CFG.defaultPassword())
+                .submit();
+        profilePage.openPage()
+                .verifyOpened()
+                .checkCategoryShown(category.name());
+    }
+}
