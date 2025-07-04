@@ -1,10 +1,8 @@
 package guru.qa.niffler.test;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +15,7 @@ public class SpendingTest {
   private static final Config CFG = Config.getInstance();
 
   @User(
-          username = "duck",
+          username = "test1",
           spendings = @Spending(
                   amount = 89990.00,
                   description = "Advanced 9 поток!",
@@ -30,7 +28,7 @@ public class SpendingTest {
     final String newDescription = ":)";
 
     open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage("duck", "12345")
+        .fillLoginPage("test1", "secret")
         .submit()
         .checkThatPageLoaded()
         .editSpending(spendJson.description())
