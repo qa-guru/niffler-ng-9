@@ -12,4 +12,5 @@ public interface Config {
   String authUrl();
   String defaultUser();
   String defaultPassword();
+  String ghUrl();
 }
