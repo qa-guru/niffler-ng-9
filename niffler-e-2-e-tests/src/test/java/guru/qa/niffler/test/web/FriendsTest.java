@@ -5,16 +5,14 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
-import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.*;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 import static guru.qa.niffler.page.Pages.*;
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
-@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
+@WebTest
 public class FriendsTest {
 
   private static final Config CFG = Config.getInstance();
@@ -26,7 +24,7 @@ public class FriendsTest {
     loginPage.fillLoginPage(username, user.password())
             .submit()
             .checkThatPageLoaded();
-    mainPage.friendsPage()
+    mainPage.goToFriends()
             .checkFriendInTable(user.friend());
   }
 
@@ -37,7 +35,7 @@ public class FriendsTest {
     loginPage.fillLoginPage(username, user.password())
             .submit()
             .checkThatPageLoaded();
-    mainPage.friendsPage()
+    mainPage.goToFriends()
             .checkEmptyTable();
   }
 
@@ -48,7 +46,7 @@ public class FriendsTest {
     loginPage.fillLoginPage(username, user.password())
             .submit()
             .checkThatPageLoaded();
-    mainPage.friendsPage()
+    mainPage.goToFriends()
             .checkIncomeFriendRequest(user.income());
   }
 
@@ -59,7 +57,7 @@ public class FriendsTest {
     loginPage.fillLoginPage(username, user.password())
             .submit()
             .checkThatPageLoaded();
-    mainPage.friendsPage()
+    mainPage.goToFriends()
             .checkOutcomeFriendRequest(user.outcome());
   }
 }
