@@ -66,7 +66,7 @@ public class UsersQueueExtension implements
     public void beforeTestExecution(ExtensionContext context) {
         Map<UserType, StaticUser> userMap = new HashMap<>();
         Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 .findFirst()
                 .map(p -> p.getAnnotation(UserType.class))
                 .ifPresent(userType -> {
@@ -94,9 +94,11 @@ public class UsersQueueExtension implements
     @Override
     public void afterTestExecution(ExtensionContext context) {
         Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
-        for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
-            Queue<StaticUser> queue = getQueueByUserType(entry.getKey());
-            queue.add(entry.getValue());
+        if (map != null) {
+            for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
+                Queue<StaticUser> queue = getQueueByUserType(entry.getKey());
+                queue.add(entry.getValue());
+            }
         }
     }
 
@@ -116,9 +118,10 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Map<UserType, StaticUser> users = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
-        StaticUser user = users.get(parameterContext.getParameter().getAnnotation(UserType.class));
-        return user;
+    public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return (StaticUser) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class)
+                .get(
+                        AnnotationSupport.findAnnotation(parameterContext.getParameter(), UserType.class).get()
+                );
     }
 }

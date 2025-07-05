@@ -2,18 +2,14 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-import java.util.Collections;
-import java.util.List;
-
-import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$$x;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class FriendsPage {
     private final SelenideElement emptyTable = $x("//*[text() = 'There are no users yet']");
     private final SelenideElement allPeopleButton = $x("//*[text() = 'All people']");
-    private final List<SelenideElement> allPeopleList = Collections.singletonList($x("//*[text() = 'All people']//*[contains(@aria-labelledby, 'tableTitle')]//*[contains(@class, 'hover')]"));
 
     public FriendsPage checkFriendInTable(String friendName) {
         $x(String.format("//*[text() = '%s']", friendName)).shouldBe(visible);

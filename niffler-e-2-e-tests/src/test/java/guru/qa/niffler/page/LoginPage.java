@@ -45,7 +45,7 @@ public class LoginPage {
 
   public MainPage successLogin(String username, String password) {
     fillLoginPage(username, password);
-
+    submit();
     return mainPage;
   }
 

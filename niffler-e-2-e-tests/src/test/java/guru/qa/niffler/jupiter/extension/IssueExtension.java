@@ -21,24 +21,24 @@ public class IssueExtension implements ExecutionCondition {
     Optional<DisabledByIssue> annotation;
 
     annotation = AnnotationSupport.findAnnotation(
-        context.getRequiredTestClass(),
-        DisabledByIssue.class,
-        SearchOption.INCLUDE_ENCLOSING_CLASSES
+            context.getRequiredTestClass(),
+            DisabledByIssue.class,
+            SearchOption.INCLUDE_ENCLOSING_CLASSES
     );
 
     if (context.getTestMethod().isPresent() && annotation.isEmpty()) {
       annotation = AnnotationSupport.findAnnotation(
-          context.getRequiredTestMethod(),
-          DisabledByIssue.class
+              context.getRequiredTestMethod(),
+              DisabledByIssue.class
       );
     }
 
     return annotation.map(
-        byIssue -> "open".equals(ghApiClient.issueState(byIssue.value()))
-            ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
-            : ConditionEvaluationResult.enabled("Issue closed")
+            byIssue -> "open".equals(ghApiClient.issueState(byIssue.value()))
+                    ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
+                    : ConditionEvaluationResult.enabled("Issue closed")
     ).orElseGet(
-        () -> ConditionEvaluationResult.enabled("Annotation @DisabledByIssue not found")
+            () -> ConditionEvaluationResult.enabled("Annotation @DisabledByIssue not found")
     );
   }
 }
