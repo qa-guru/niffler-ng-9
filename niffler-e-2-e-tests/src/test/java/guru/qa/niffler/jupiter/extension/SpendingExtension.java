@@ -2,6 +2,7 @@ package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -22,32 +23,33 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
-    AnnotationSupport.findAnnotation(
-            context.getRequiredTestMethod(),
-            Spending.class
-    ).ifPresent(
-            anno -> {
-              SpendJson spendJson = new SpendJson(
-                      null,
-                      new Date(),
-                      new CategoryJson(
-                              null,
-                              anno.category(),
-                              anno.username(),
-                              false
-                      ),
-                      anno.currency(),
-                      anno.amount(),
-                      anno.description(),
-                      anno.username()
-              );
-              context.getStore(NAMESPACE).put(
-                      context.getUniqueId(),
-                      spendApiClient.addSpend(spendJson)
-              );
-            }
-    );
+  public void beforeEach(ExtensionContext context) {
+      User userAnnotation = AnnotationSupport.findAnnotation(
+              context.getRequiredTestMethod(),
+              User.class
+      ).orElse(null);
+      if (userAnnotation != null && userAnnotation.spendings().length > 0) {
+          Spending spending = userAnnotation.spendings()[0];
+          CategoryJson category = new CategoryJson(
+                  null,
+                  spending.category(),
+                  userAnnotation.username(),
+                  false
+          );
+          SpendJson spendJson = new SpendJson(
+                  null,
+                  new Date(),
+                  category,
+                  spending.currency(),
+                  spending.amount(),
+                  spending.description(),
+                  userAnnotation.username()
+          );
+          context.getStore(NAMESPACE).put(
+                  context.getUniqueId(),
+                  spendApiClient.addSpend(spendJson)
+          );
+      }
   }
 
   @Override
