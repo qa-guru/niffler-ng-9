@@ -19,7 +19,7 @@ public class SpendDbClient {
   public SpendJson createSpend(SpendJson spend) {
     SpendEntity spendEntity = SpendEntity.fromJson(spend);
     if (spendEntity.getCategory().getId() == null) {
-      Optional<CategoryEntity> categoryDb = categoryDao.findCategoryByUsernameAndCategoryName(spendEntity.getCategory().getUsername(),
+      Optional<CategoryEntity> categoryDb = categoryDao.findByUsernameAndCategoryName(spendEntity.getCategory().getUsername(),
               spendEntity.getCategory().getName());
       spendEntity.setCategory(categoryDb.orElseGet(
               () -> categoryDao.create(spendEntity.getCategory())
@@ -43,7 +43,7 @@ public class SpendDbClient {
   }
 
   public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String name, String username) {
-    Optional<CategoryEntity> categoryEntity = categoryDao.findCategoryByUsernameAndCategoryName(name, username);
+    Optional<CategoryEntity> categoryEntity = categoryDao.findByUsernameAndCategoryName(name, username);
     return categoryEntity.map(CategoryJson::fromEntity);
   }
 
