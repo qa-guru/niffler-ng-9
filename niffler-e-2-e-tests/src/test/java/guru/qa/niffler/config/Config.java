@@ -12,4 +12,7 @@ public interface Config {
   String authUrl();
   String defaultUser();
   String defaultPassword();
+  String gatewayUrl();
+  String userdataUrl ();
+  String ghUrl();
 }
