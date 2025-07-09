@@ -14,29 +14,47 @@ enum LocalConfig implements Config {
   }
 
   @Override
+  public String defaultUser() {return "duck";} //should be moved to secret resource
+
+  @Override
+  public String defaultPassword() {return "12345";}//should be moved to secret resource
+  @Override
+  public String authJdbcUrl() {
+    return "jdbc:postgresql://127.0.0.1:5432/niffler-auth";
+  }
+
+  @Override
+  public String gatewayUrl() {
+    return "http://127.0.0.1:8090/";
+  }
+
+  @Override
+  public String userdataUrl() {
+    return "http://127.0.0.1:8089/";
+  }
+
+  @Override
+  public String userdataJdbcUrl() {
+    return "jdbc:postgresql://127.0.0.1:5432/niffler-userdata";
+  }
+
+  @Override
   public String spendUrl() {
     return "http://127.0.0.1:8093/";
   }
 
   @Override
-  public String defaultUser() {return "duck";} //should be moved to secret resource
+  public String spendJdbcUrl() {
+    return "jdbc:postgresql://127.0.0.1:5432/niffler-spend";
+  }
 
   @Override
-  public String defaultPassword() {return "12345";}//should be moved to secret resource
+  public String currencyJdbcUrl() {
+    return "jdbc:postgresql://127.0.0.1:5432/niffler-currency";
+  }
 
   @Override
   public String ghUrl() {
     return "https://api.github.com/";
   }
-
-  @Override
-  public String gatewayUrl() {
-    return "http://127.0.0.1:8090";
-  }
-
-  @Override
-  public String userdataUrl() {
-    return "http://127.0.0.1:8089";
-  }
-
 }
