@@ -18,7 +18,7 @@ public class SpendDbClient {
 
     private static final Config CFG = Config.getInstance();
 
-    public SpendJson createSpend(SpendJson spend) {
+    public SpendJson createSpend(SpendJson spend, int transactionLevel) {
         return transaction(connection -> {
                     SpendEntity spendEntity = SpendEntity.fromJson(spend);
                     if (spendEntity.getCategory().getId() == null) {
@@ -30,87 +30,96 @@ public class SpendDbClient {
                             new SpendDaoJdbc(connection).create(spendEntity)
                     );
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public Optional<SpendEntity> findSpendById(UUID id) {
+    public Optional<SpendEntity> findSpendById(UUID id, int transactionLevel) {
         return transaction(connection -> {
                     Optional<SpendEntity> spend = new SpendDaoJdbc(connection)
                             .findSpendById(id);
                     return spend;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public List<SpendEntity> findAllByUsername(String username) {
+    public List<SpendEntity> findAllByUsername(String username, int transactionLevel) {
         return transaction(connection -> {
                     List<SpendEntity> spend = new SpendDaoJdbc(connection)
                             .findAllByUsername(username);
                     return spend;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public Boolean deleteSpend(UUID id) {
+    public Boolean deleteSpend(UUID id, int transactionLevel) {
         return transaction(connection -> {
                     Boolean spend = new SpendDaoJdbc(connection)
                             .deleteSpend(id);
                     return spend;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public CategoryEntity createCategory(CategoryJson categoryJson) {
+    public CategoryEntity createCategory(CategoryJson categoryJson, int transactionLevel) {
         return transaction(connection -> {
                     CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
                     return new CategoryDaoJdbc(connection)
                             .create(categoryEntity);
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public List<CategoryEntity> findAllByUserName(String username) {
+    public List<CategoryEntity> findAllByUserName(String username, int transactionLevel) {
         return transaction(connection -> {
                     List<CategoryEntity> categories = new CategoryDaoJdbc(connection)
                             .findAllByUserName(username);
                     return categories;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
+    public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName, int transactionLevel) {
         return transaction(connection -> {
                     Optional<CategoryEntity> categories = new CategoryDaoJdbc(connection)
                             .findCategoryByUsernameAndCategoryName(username, categoryName);
                     return categories;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public Boolean updateCategory(CategoryJson category) {
+    public Boolean updateCategory(CategoryJson category, int transactionLevel) {
         return transaction(connection -> {
                     CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
                     return new CategoryDaoJdbc(connection)
                             .update(categoryEntity);
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 
-    public Boolean deleteCategory(UUID id) {
+    public Boolean deleteCategory(UUID id, int transactionLevel) {
         return transaction(connection -> {
                     Boolean categories = new CategoryDaoJdbc(connection)
                             .delete(id);
                     return categories;
                 },
-                CFG.spendJdbcUrl()
+                CFG.spendJdbcUrl(),
+                transactionLevel
         );
     }
 }

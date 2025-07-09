@@ -1,19 +1,13 @@
 package guru.qa.niffler.data.entity.userdata;
 
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.UserJson;
-import jakarta.persistence.*;
+import guru.qa.niffler.model.auth.UserJson;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.UUID;
 
 @Getter
 @Setter

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import java.sql.Connection;
 import java.util.Optional;
 
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
@@ -45,7 +46,7 @@ public class CategoryExtension implements
                     userAnnotation.username(),
                     category.archived()
             );
-            CategoryJson created = CategoryJson.fromEntity(spendDbClient.createCategory(categoryJson));
+            CategoryJson created = CategoryJson.fromEntity(spendDbClient.createCategory(categoryJson, Connection.TRANSACTION_READ_COMMITTED));
             context.getStore(NAMESPACE).put(context.getUniqueId(), created);
         }
     }
@@ -60,7 +61,7 @@ public class CategoryExtension implements
                     category.username(),
                     true
             );
-            spendDbClient.updateCategory(category);
+            spendDbClient.updateCategory(category, Connection.TRANSACTION_READ_COMMITTED);
         }
     }
 

@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 @Disabled
 public class JdbcTest {
 
@@ -30,15 +30,16 @@ public class JdbcTest {
                         new Date(),
                         new CategoryJson(
                                 null,
-                                "cat-name-tx-2",
-                                "duck",
+                                "cat-name-tx-3",
+                                "marina",
                                 false
                         ),
                         CurrencyValues.RUB,
                         1000.0,
-                        "spend-name-tx",
-                        null
-                )
+                        "spend-name-tx-3",
+                        "marina"
+                ),
+                Connection.TRANSACTION_REPEATABLE_READ
         );
 
         System.out.println(spend);
@@ -54,7 +55,8 @@ public class JdbcTest {
                         "bla 2",
                         "bla bla bla",
                         true
-                )
+                ),
+               Connection.TRANSACTION_SERIALIZABLE
         );
         Assertions.assertTrue(rows);
     }
@@ -63,7 +65,7 @@ public class JdbcTest {
     void checkCategoryByUsername() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        List<CategoryEntity> rows =  spendDbClient.findAllByUserName("marina");
+        List<CategoryEntity> rows =  spendDbClient.findAllByUserName("marina", Connection.TRANSACTION_READ_COMMITTED);
         for (CategoryEntity row : rows) {
             System.err.println(row.getId());
             System.err.println(row.getName());
@@ -76,14 +78,14 @@ public class JdbcTest {
     void checkCategoryByUsernameAndCategoryName() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        Optional<CategoryEntity> rows =  spendDbClient.findCategoryByUsernameAndCategoryName("marina", "31241412412");
+        Optional<CategoryEntity> rows =  spendDbClient.findCategoryByUsernameAndCategoryName("marina", "31241412412", Connection.TRANSACTION_REPEATABLE_READ);
     }
 
     @Test
     void checkSpendsByUsername() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        List<SpendEntity> rows = spendDbClient.findAllByUsername("marina");
+        List<SpendEntity> rows = spendDbClient.findAllByUsername("marina", Connection.TRANSACTION_REPEATABLE_READ);
         System.err.println(rows.toString());
     }
 
@@ -91,7 +93,7 @@ public class JdbcTest {
     void checkSpendById() {
         SpendDbClient spendDbClient = new SpendDbClient();
 
-        Optional<SpendEntity> rows = spendDbClient.findSpendById(UUID.fromString("36b9a123-bec3-4d52-b38b-212e1c6e358f"));
+        Optional<SpendEntity> rows = spendDbClient.findSpendById(UUID.fromString("36b9a123-bec3-4d52-b38b-212e1c6e358f"), Connection.TRANSACTION_READ_COMMITTED);
         System.err.println(rows.toString());
     }
 
@@ -99,7 +101,7 @@ public class JdbcTest {
     void checkFindUserByUsername() {
         UserDbClient userDbClient = new UserDbClient();
 
-        Optional<UserEntity> rows = userDbClient.findByUserName("marina");
+        Optional<UserEntity> rows = userDbClient.findByUserName("marina", Connection.TRANSACTION_READ_UNCOMMITTED);
         System.err.println(rows.toString());
     }
 }
