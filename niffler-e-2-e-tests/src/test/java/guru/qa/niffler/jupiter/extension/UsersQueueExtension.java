@@ -2,7 +2,6 @@ package guru.qa.niffler.jupiter.extension;
 
 import io.qameta.allure.Allure;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.kafka.common.quota.ClientQuotaAlteration;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -53,6 +52,26 @@ static {
       }
   }
 
+  private Optional<StaticUser> selectUser(UserType.Type type) {
+      switch (type) {
+          case EMPTY -> {
+              return Optional.ofNullable(EMPTY_USERS.poll());
+          }
+          case WITH_FRIEND -> {
+              return Optional.ofNullable((WITH_FRIEND_USERS).poll());
+          }
+          case WITH_INCOME_REQUEST -> {
+              return Optional.ofNullable((WITH_INCOME_REQUEST_USERS).poll());
+          }
+          case WITH_OUTCOME_REQUEST -> {
+              return Optional.ofNullable((WITH_OUTCOME_REQUEST_USERS).poll());
+          }
+          default -> {
+              return Optional.empty();
+          }
+      }
+  }
+
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
@@ -63,21 +82,9 @@ static {
           Optional<StaticUser> user = Optional.empty();
           StopWatch sw = StopWatch.createStarted();
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-              switch (ut.value()) {
-                  case EMPTY:
-                      user = Optional.ofNullable(EMPTY_USERS.poll());
-                      break;
-                  case WITH_FRIEND:
-                      user = Optional.ofNullable((WITH_FRIEND_USERS).poll());
-                      break;
-                  case WITH_INCOME_REQUEST:
-                      user = Optional.ofNullable((WITH_INCOME_REQUEST_USERS).poll());
-                      break;
-                  case WITH_OUTCOME_REQUEST:
-                      user = Optional.ofNullable((WITH_OUTCOME_REQUEST_USERS).poll());
-                      break;
+                user = selectUser(ut.value());
               }
-          }
+
           Allure.getLifecycle().updateTestCase(testCase ->
               testCase.setStart(new Date().getTime())
           );
