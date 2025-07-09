@@ -60,7 +60,7 @@ public class CategoryExtension implements
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (!category.archived()) {
+        if (category != null && !category.archived()) {
             category = new CategoryJson(
                     category.id(),
                     category.name(),
