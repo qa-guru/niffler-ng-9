@@ -2,13 +2,15 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.RegisterPage;
-import guru.qa.niffler.utils.GeneratorUtils;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.utils.GeneratorUtils.generateUniqueUsername;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
+@WebTest
 public class RegistrationTest {
     RegisterPage registerPage = new RegisterPage();
     String password = "123456";
@@ -17,7 +19,7 @@ public class RegistrationTest {
 
     @Test
     void shouldRegisterNewUser() {
-        String userName = generateUniqueUsername();
+        String userName = randomUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password)
                 .checkRegistrationSuccessful();
@@ -25,7 +27,7 @@ public class RegistrationTest {
 
     @Test
     void shouldNotRegisterUserWithExistingName() {
-        String userName = new GeneratorUtils().generateUniqueUsername();
+        String userName = randomUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password)
                 .checkRegistrationSuccessful();
@@ -37,7 +39,7 @@ public class RegistrationTest {
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-        String userName = new GeneratorUtils().generateUniqueUsername();
+        String userName = randomUsername();
         registerPage.openPage()
                 .registerNewUser(userName, password, password + "1")
                 .checkErrorPasswordsDontCoincideShown();

@@ -2,19 +2,24 @@ package guru.qa.niffler.test;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
+@WebTest
 public class ProfileTest {
     ProfilePage profilePage = new ProfilePage();
     LoginPage loginPage = new LoginPage();
     private static final Config CFG = Config.getInstance();
 
-    @Category(
+    @User(
             username = "duck",
-            archived = true
+            categories = {@Category(
+                archived = true
+            )}
     )
     @Test
     void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category){
@@ -27,9 +32,12 @@ public class ProfileTest {
 
     }
 
-    @Category(
+    @User(
             username = "duck",
-            archived = false)
+            categories = {@Category(
+                    archived = false
+            )}
+    )
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson category){
         loginPage.openPage()

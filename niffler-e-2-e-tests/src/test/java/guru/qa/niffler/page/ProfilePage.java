@@ -9,7 +9,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class ProfilePage {
-    private String categoryLabel = ("//span[text()='new1']");
+    private final String categoryLabel = ("//span[text()='%s']");
     private final SelenideElement profileLabel = $x("//h2[text()='Profile']");
     private final SelenideElement usernameInput = $("#username");
 

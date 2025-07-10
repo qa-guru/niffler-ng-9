@@ -94,7 +94,7 @@ public class SpendApiClient {
     }
   }
 
-  public CategoryJson addCategory(CategoryJson category) {
+  public CategoryJson createCategory(CategoryJson category) {
     try {
       Response<CategoryJson> response = spendApi.addCategory(category).execute();
       if (!response.isSuccessful()) {
