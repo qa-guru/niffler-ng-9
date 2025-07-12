@@ -1,54 +1,80 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.data.dao.CategoryDao;
-import guru.qa.niffler.data.dao.SpendDao;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.spend.CategoryJson;
+import guru.qa.niffler.model.spend.SpendJson;
 
 import java.util.Optional;
 
+import static guru.qa.niffler.data.Databases.*;
+
 public class SpendDbClient {
 
-  private final SpendDao spendDao = new SpendDaoJdbc();
-  private final CategoryDao categoryDao = new CategoryDaoJdbc();
+    private static final Config CFG = Config.getInstance();
 
-  public SpendJson createSpend(SpendJson spend) {
-    SpendEntity spendEntity = SpendEntity.fromJson(spend);
-    if (spendEntity.getCategory().getId() == null) {
-      Optional<CategoryEntity> categoryDb = categoryDao.findByUsernameAndCategoryName(spendEntity.getCategory().getUsername(),
-              spendEntity.getCategory().getName());
-      spendEntity.setCategory(categoryDb.orElseGet(
-              () -> categoryDao.create(spendEntity.getCategory())
-      ));
+    public SpendJson createSpend(SpendJson spend) {
+        return transaction(
+                connection -> {
+                    SpendEntity spendEntity = SpendEntity.fromJson(spend);
+                    if (spendEntity.getCategory().getId() == null) {
+                        Optional<CategoryEntity> categoryDb = new CategoryDaoJdbc(connection).findByUsernameAndCategoryName(spendEntity.getCategory().getUsername(),
+                                spendEntity.getCategory().getName());
+                        spendEntity.setCategory(categoryDb.orElseGet(
+                                () -> new CategoryDaoJdbc(connection).create(spendEntity.getCategory())
+                        ));
+                    }
+                    return SpendJson.fromEntity(
+                            new SpendDaoJdbc(connection).create(spendEntity)
+                    );
+                },
+                CFG.spendJdbcUrl()
+        );
     }
-    return SpendJson.fromEntity(
-        spendDao.create(spendEntity)
-    );
-  }
 
-  public void deleteSpend(SpendJson spend) {
-    SpendEntity spendEntity = SpendEntity.fromJson(spend);
-    spendDao.deleteSpend(spendEntity);
-  }
+    public void deleteSpend(SpendJson spend) {
+        transaction(
+                connection -> {
+                    SpendEntity spendEntity = SpendEntity.fromJson(spend);
+                    new SpendDaoJdbc(connection).deleteSpend(spendEntity);
+                }, CFG.spendJdbcUrl()
+        );
+    }
 
-  public CategoryJson createCategory(CategoryJson category) {
-    CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
-    return CategoryJson.fromEntity(
-            categoryDao.create(categoryEntity)
-    );
-  }
+    public CategoryJson createCategory(CategoryJson category) {
+        return transaction(
+                connection -> {
+                    CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
+                    return CategoryJson.fromEntity(
+                            new CategoryDaoJdbc(connection).create(categoryEntity)
+                    );
+                },
+                CFG.spendJdbcUrl()
+        );
+    }
 
-  public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String name, String username) {
-    Optional<CategoryEntity> categoryEntity = categoryDao.findByUsernameAndCategoryName(name, username);
-    return categoryEntity.map(CategoryJson::fromEntity);
-  }
+    public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String name, String username) {
+        return transaction(
+                connection -> {
+                    Optional<CategoryEntity> categoryEntity = new CategoryDaoJdbc(connection)
+                            .findByUsernameAndCategoryName(name, username);
+                    return categoryEntity.map(CategoryJson::fromEntity);
+                },
+                CFG.spendJdbcUrl()
+        );
 
-  public void deleteCategory(CategoryJson category) {
-    CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
-    categoryDao.deleteCategory(categoryEntity);
-  }
+    }
+
+    public void deleteCategory(CategoryJson category) {
+        transaction(
+                connection -> {
+                    CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
+                    new CategoryDaoJdbc(connection).deleteCategory(categoryEntity);
+                },
+                CFG.spendJdbcUrl()
+        );
+    }
 }
