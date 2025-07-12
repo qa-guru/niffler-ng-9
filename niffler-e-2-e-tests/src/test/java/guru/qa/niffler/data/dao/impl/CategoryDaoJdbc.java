@@ -125,7 +125,7 @@ public class CategoryDaoJdbc implements CategoryDao {
   public void deleteCategory(CategoryEntity category) {
     try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
-              "DELETE FROM category WHERE username = ? AND name = ?) "
+              "DELETE FROM category WHERE username = ? AND name = ? "
       )) {
         ps.setString(1, category.getUsername());
         ps.setString(2, category.getName());
