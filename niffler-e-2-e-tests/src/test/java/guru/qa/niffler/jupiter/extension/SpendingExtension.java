@@ -1,6 +1,8 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.data.dao.SpendDao;
+import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
+import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -17,9 +19,9 @@ import java.util.Date;
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
-  private final SpendApiClient spendApiClient = new SpendApiClient();
+  private final SpendDao spendDao = new SpendDaoJdbc();
 
-  @Override
+    @Override
   public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(
         context.getRequiredTestMethod(),
@@ -42,10 +44,10 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                         anno.description(),
                         userAnno.username()
                 );
+                SpendEntity createdSpendEntity = spendDao.create(SpendEntity.fromJson(spendJson));
                 context.getStore(NAMESPACE).put(
                         context.getUniqueId(),
-                        spendApiClient.addSpend(spendJson)
-                );
+                        SpendJson.fromEntity(createdSpendEntity));
             }
         }
     );
