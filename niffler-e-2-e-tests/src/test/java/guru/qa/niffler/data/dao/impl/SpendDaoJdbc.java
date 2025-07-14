@@ -27,15 +27,13 @@ public class SpendDaoJdbc implements SpendDao {
               "VALUES ( ?, ?, ?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       )) {
-        //first find category_id in category table
-        Optional<CategoryEntity> categoryEntity = categoryDao.findCategoryByUsernameAndCategoryName(spend.getUsername(), spend.getCategory().getName());
 
         ps.setString(1, spend.getUsername());
         ps.setDate(2, spend.getSpendDate());
         ps.setString(3, spend.getCurrency().name());
         ps.setDouble(4, spend.getAmount());
         ps.setString(5, spend.getDescription());
-        ps.setObject(6, categoryEntity.map(CategoryEntity::getId).orElseThrow(() -> new SQLException("Category not found")));
+        ps.setObject(6, spend.getCategory());
 
         ps.executeUpdate();
 

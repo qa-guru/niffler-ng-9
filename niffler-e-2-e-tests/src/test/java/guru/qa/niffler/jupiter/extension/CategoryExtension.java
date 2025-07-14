@@ -38,26 +38,12 @@ public class CategoryExtension implements
                                 null,
                                 generateUniqueCategoryName(),
                                 userAnno.username(),
-                                false
+                                anno.archived()
                         );
-
-//                        CategoryJson created = spendApiClient.createCategory(category);
-
-                        CategoryEntity createdCategoryEntity = categoryDao.create(CategoryEntity.fromJson(category));
-                        CategoryJson created = CategoryJson.fromEntity(createdCategoryEntity);
-                        if (anno.archived()) {
-                            CategoryJson archivedCategory = new CategoryJson(
-                                    created.id(),
-                                    created.name(),
-                                    created.username(),
-                                    true
-                            );
-                            created = spendApiClient.updateCategory(archivedCategory);
-                        }
 
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
-                                created
+                                CategoryJson.fromEntity(categoryDao.create(CategoryEntity.fromJson(category)))
                         );
                     }
                 });
