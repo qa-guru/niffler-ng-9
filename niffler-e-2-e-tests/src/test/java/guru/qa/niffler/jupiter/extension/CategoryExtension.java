@@ -1,6 +1,9 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -19,13 +22,14 @@ public class CategoryExtension implements
         BeforeEachCallback,
         AfterTestExecutionCallback,
         ParameterResolver {
+    private final CategoryDao categoryDao = new CategoryDaoJdbc();
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private final SpendApiClient spendApiClient = new SpendApiClient();
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(userAnno -> {
                     if (userAnno.categories().length > 0) {
@@ -34,39 +38,22 @@ public class CategoryExtension implements
                                 null,
                                 generateUniqueCategoryName(),
                                 userAnno.username(),
-                                false
+                                anno.archived()
                         );
-
-                        CategoryJson created = spendApiClient.createCategory(category);
-                        if (anno.archived()) {
-                            CategoryJson archivedCategory = new CategoryJson(
-                                    created.id(),
-                                    created.name(),
-                                    created.username(),
-                                    true
-                            );
-                            created = spendApiClient.updateCategory(archivedCategory);
-                        }
 
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
-                                created
+                                CategoryJson.fromEntity(categoryDao.create(CategoryEntity.fromJson(category)))
                         );
                     }
                 });
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (category != null && !category.archived()) {
-            category = new CategoryJson(
-                    category.id(),
-                    category.name(),
-                    category.username(),
-                    true
-            );
-            spendApiClient.updateCategory(category);
+            categoryDao.deleteCategory(CategoryEntity.fromJson(category));
         }
     }
 
