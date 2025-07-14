@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
@@ -21,7 +20,8 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
   private final SpendDao spendDao = new SpendDaoJdbc();
-  @Override
+
+    @Override
   public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(
         context.getRequiredTestMethod(),
