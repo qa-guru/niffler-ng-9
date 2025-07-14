@@ -23,7 +23,7 @@ public class SpendingTest {
             )
   )
   @Test
-  void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
+  void spendingShouldBeDisplayedInTheList(SpendJson spendJson) {
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
