@@ -33,7 +33,7 @@ public class SpendDaoJdbc implements SpendDao {
         ps.setString(3, spend.getCurrency().name());
         ps.setDouble(4, spend.getAmount());
         ps.setString(5, spend.getDescription());
-        ps.setObject(6, spend.getCategory());
+        ps.setObject(6, spend.getCategory().getId());
 
         ps.executeUpdate();
 
