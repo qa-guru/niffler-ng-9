@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserDao {
-    UserEntity createUser(UserEntity user);
+  UserEntity createUser(UserEntity user);
 
-    Optional<UserEntity> findById(UUID id);
+  Optional<UserEntity> findById(UUID id);
 
-    Optional<UserEntity> findByUsername(String username);
+  Optional<UserEntity> findByUsername(String username);
 
-    void deleteUser(UserEntity user);
+  void deleteUser(UserEntity user);
 }

@@ -1,8 +1,8 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.spend.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.spend.SpendJson;
 import retrofit2.Call;
 import retrofit2.http.*;
 
