@@ -1,7 +1,7 @@
 package guru.qa.niffler.model;
 
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.auth.AuthorityUserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public record UserJson (
    Boolean credentialsNonExpired,
    List<AuthorityEntity> authorities) {
 
-  public static UserJson fromEntity(AuthorityUserEntity entity) {
+  public static UserJson fromEntity(AuthUserEntity entity) {
     return new UserJson(
             entity.getId(),
             entity.getUsername(),

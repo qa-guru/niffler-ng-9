@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AuthorityUserEntity implements Serializable {
+public class AuthUserEntity implements Serializable {
   private UUID id;
   private String username;
   private String password;
@@ -21,8 +21,8 @@ public class AuthorityUserEntity implements Serializable {
   private Boolean credentialsNonExpired;
   private List<AuthorityEntity> authorities = new ArrayList<>();
 
-  public static AuthorityUserEntity fromJson(UserJson userJson) {
-    AuthorityUserEntity ue = new AuthorityUserEntity();
+  public static AuthUserEntity fromJson(UserJson userJson) {
+    AuthUserEntity ue = new AuthUserEntity();
     ue.id = userJson.getId();
     ue.username = userJson.getUsername();
     ue.password = userJson.getPassword();

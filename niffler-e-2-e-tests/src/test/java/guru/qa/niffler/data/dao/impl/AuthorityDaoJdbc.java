@@ -1,12 +1,11 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.AuthorityDao;
+import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 
 import java.sql.*;
-import java.util.UUID;
 
-public class AuthorityDaoJdbc implements AuthorityDao {
+public class AuthorityDaoJdbc implements AuthAuthorityDao {
     private final Connection connection;
 
     public AuthorityDaoJdbc(Connection connection) {
