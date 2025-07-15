@@ -16,7 +16,7 @@ public record UserJson(
     byte[] photo,
     byte[] photoSmall) {
 
-  public static UserJson fromEntity (UserEntity entity) {
+  public static UserJson fromEntity(UserEntity entity) {
     return new UserJson(
         entity.getId(),
         entity.getUsername(),

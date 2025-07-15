@@ -19,7 +19,7 @@ public class UserEntity {
   private byte[] photo;
   private byte[] photoSmall;
 
-  public static UserEntity fromJson (UserJson json) {
+  public static UserEntity fromJson(UserJson json) {
       UserEntity ue = new UserEntity();
       ue.setId(json.id());
       ue.setUsername(json.username());
