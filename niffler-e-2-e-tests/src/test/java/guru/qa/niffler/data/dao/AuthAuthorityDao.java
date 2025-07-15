@@ -10,7 +10,7 @@ public interface AuthAuthorityDao {
 
   Optional<AuthorityEntity> findById(UUID id);
 
-  Optional<AuthorityEntity> findByUsername(String username);
+  Optional<AuthorityEntity> findByUserId(UUID userId);
 
-  void deleteUser(AuthorityEntity authority);
+  void delete(AuthorityEntity authority);
 }

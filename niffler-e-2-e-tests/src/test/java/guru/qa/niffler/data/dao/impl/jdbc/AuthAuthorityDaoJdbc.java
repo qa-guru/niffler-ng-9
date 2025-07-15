@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -55,17 +55,17 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
   }
 
   @Override
-  public Optional<AuthorityEntity> findByUsername(String username) {
+  public Optional<AuthorityEntity> findByUserId(UUID userId) {
     try (PreparedStatement ps = connection.prepareStatement(
-            "SELECT * FROM authority WHERE username = ?"
+            "SELECT * FROM authority WHERE userId = ?"
     )) {
-      ps.setString(1, username);
+      ps.setObject(1, userId);
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
           AuthorityEntity ae = new AuthorityEntity();
           ae.setId(rs.getObject("id", UUID.class));
-          ae.setUserId(rs.getObject("user_id", UUID.class));
+          ae.setUserId(rs.getObject("userId", UUID.class));
           ae.setAuthority(rs.getObject("authority", Authority.class));
           return Optional.of(ae);
         } else return Optional.empty();
@@ -76,7 +76,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
   }
 
   @Override
-  public void deleteUser(AuthorityEntity authority) {
+  public void delete(AuthorityEntity authority) {
     try (PreparedStatement ps = connection.prepareStatement(
             "DELETE FROM user WHERE id = ?"
     )) {
