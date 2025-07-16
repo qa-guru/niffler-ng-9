@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AuthUserEntity {
+public class UserEntity {
   private UUID id;
   private String username;
   private String password;
@@ -17,8 +17,8 @@ public class AuthUserEntity {
   private Boolean accountNonLocked;
   private Boolean credentialsNonExpired;
 
-  public static AuthUserEntity fromJson(AuthUserJson json) {
-    AuthUserEntity ue = new AuthUserEntity();
+  public static UserEntity fromJson(AuthUserJson json) {
+    UserEntity ue = new UserEntity();
     ue.setId(json.id());
     ue.setUsername(json.username());
     ue.setPassword(json.password());

@@ -1,7 +1,8 @@
 package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.data.dao.UserdataUserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.mapper.userdata.UserdataUserEntityMapRowMapper;
 import guru.qa.niffler.data.mapper.userdata.UserdataUserEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,8 +11,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
 
@@ -22,7 +25,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
   }
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public UdUserEntity create(UdUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
@@ -47,7 +50,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
   }
 
   @Override
-  public Optional<UserEntity> findById(UUID id) {
+  public Optional<UdUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
@@ -55,6 +58,37 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
             UserdataUserEntityRowMapper.instance,
             id
         )
+    );
+  }
+
+  @Override
+  public List<UdUserEntity> findAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    return jdbcTemplate.queryForList(
+            "SELECT * FROM \"user\""
+        ).stream()
+        .map(UserdataUserEntityMapRowMapper.instance::mapRow)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public Optional<UdUserEntity> findByUsername(String username) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(
+            "SELECT * FROM \"user\" WHERE username = ?",
+            UserdataUserEntityRowMapper.instance,
+            username
+        )
+    );
+  }
+
+  @Override
+  public void delete(UdUserEntity user) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    jdbcTemplate.update(
+        "DELETE FROM \"user\" WHERE id = ?",
+        user.getId()
     );
   }
 

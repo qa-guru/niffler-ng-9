@@ -5,10 +5,10 @@ import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
 import guru.qa.niffler.data.dao.impl.spring.AuthAuthorityDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.spring.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.spring.UserdataUserDaoSpringJdbc;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.UserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.auth.AuthUserJson;
 import guru.qa.niffler.model.userdata.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -28,7 +28,7 @@ public class UserDbClient {
   public AuthUserJson createUser(AuthUserJson json) {
         return transaction(
             connection -> {
-              AuthUserEntity ue = AuthUserEntity.fromJson(json);
+              UserEntity ue = UserEntity.fromJson(json);
               ue.setPassword(pe.encode(json.password()));
               return AuthUserJson.fromEntity(new AuthUserDaoJdbc(connection).createAuthUser(ue));
               }, CFG.authJdbcUrl()
@@ -38,7 +38,7 @@ public class UserDbClient {
   public Optional<AuthUserJson> findById(AuthUserJson json) {
     return transaction(
         connection -> {
-          Optional<AuthUserEntity> ue = new AuthUserDaoJdbc(connection)
+          Optional<UserEntity> ue = new AuthUserDaoJdbc(connection)
               .findById(json.id());
           return ue.map(AuthUserJson::fromEntity);
         }, CFG.authJdbcUrl()
@@ -48,7 +48,7 @@ public class UserDbClient {
   public Optional<AuthUserJson> findByUsername(AuthUserJson json) {
     return transaction(
         connection -> {
-          Optional<AuthUserEntity> ue = new AuthUserDaoJdbc(connection)
+          Optional<UserEntity> ue = new AuthUserDaoJdbc(connection)
               .findByUsername(json.username());
           return ue.map(AuthUserJson::fromEntity);
         }, CFG.authJdbcUrl()
@@ -58,14 +58,14 @@ public class UserDbClient {
   public void deleteUser(AuthUserJson json) {
     transaction(
         connection -> {
-          AuthUserEntity ue = AuthUserEntity.fromJson(json);
+          UserEntity ue = UserEntity.fromJson(json);
           new AuthUserDaoJdbc(connection).deleteUser(ue);
         }, CFG.authJdbcUrl()
     );
   }
 
   public UserJson createUserSpringJdbc(UserJson user) {
-    AuthUserEntity authUser = new AuthUserEntity();
+    UserEntity authUser = new UserEntity();
     authUser.setUsername(user.username());
     authUser.setPassword(pe.encode("12345"));
     authUser.setEnabled(true);
@@ -73,7 +73,7 @@ public class UserDbClient {
     authUser.setAccountNonLocked(true);
     authUser.setCredentialsNonExpired(true);
 
-    AuthUserEntity createdAuthUser = new AuthUserDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
+    UserEntity createdAuthUser = new AuthUserDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
         .createAuthUser(authUser);
 
     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
@@ -91,7 +91,7 @@ public class UserDbClient {
     return UserJson.fromEntity(
         new UserdataUserDaoSpringJdbc(dataSource(CFG.userdataJdbcUrl()))
             .create(
-                UserEntity.fromJson(user)
+                UdUserEntity.fromJson(user)
             )
     );
   }

@@ -74,6 +74,17 @@ public class SpendDaoSpringJdbc implements SpendDao {
   }
 
   @Override
+  public List<SpendEntity> findAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+    return jdbcTemplate.queryForList(
+            "SELECT * FROM \"spend\""
+        ).stream()
+        .map(SpendEntityMapRowMapper.instance::mapRow)
+        .collect(Collectors.toList());
+  }
+
+  @Override
   public void deleteSpend(SpendEntity spend) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.update(

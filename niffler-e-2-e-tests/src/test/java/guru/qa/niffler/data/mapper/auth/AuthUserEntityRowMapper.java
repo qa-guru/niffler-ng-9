@@ -1,13 +1,13 @@
 package guru.qa.niffler.data.mapper.auth;
 
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.UserEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class AuthUserEntityRowMapper implements RowMapper<AuthUserEntity> {
+public class AuthUserEntityRowMapper implements RowMapper<UserEntity> {
 
   public static final AuthUserEntityRowMapper instance = new AuthUserEntityRowMapper();
 
@@ -15,8 +15,8 @@ public class AuthUserEntityRowMapper implements RowMapper<AuthUserEntity> {
   }
 
   @Override
-  public AuthUserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-    AuthUserEntity result = new AuthUserEntity();
+  public UserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    UserEntity result = new UserEntity();
     result.setId(rs.getObject("id", UUID.class));
     result.setUsername(rs.getString("username"));
     result.setPassword(rs.getString("password"));

@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.mapper.auth.AuthorityEntityMapRowMapper;
 import guru.qa.niffler.data.mapper.auth.AuthorityEntityRowMapper;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,8 +10,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
@@ -62,6 +65,16 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
             userId
         )
     );
+  }
+
+  @Override
+  public List<AuthorityEntity> findAll() {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    return jdbcTemplate.queryForList(
+        "SELECT * FROM \"authority\""
+    ).stream()
+    .map(AuthorityEntityMapRowMapper.instance::mapRow)
+    .collect(Collectors.toList());
   }
 
   @Override
