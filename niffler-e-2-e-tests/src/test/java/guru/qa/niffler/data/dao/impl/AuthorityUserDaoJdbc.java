@@ -1,14 +1,15 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.AuthorityUserDao;
-import guru.qa.niffler.data.entity.auth.AuthorityUserEntity;
+import guru.qa.niffler.data.dao.AuthUserDao;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
+import java.util.Optional;
 import java.util.UUID;
 
-public class AuthorityUserDaoJdbc implements AuthorityUserDao {
+public class AuthorityUserDaoJdbc implements AuthUserDao {
     private final Connection connection;
 
     public AuthorityUserDaoJdbc(Connection connection) {
@@ -17,7 +18,7 @@ public class AuthorityUserDaoJdbc implements AuthorityUserDao {
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
-    public AuthorityUserEntity create(AuthorityUserEntity user) {
+    public AuthUserEntity create(AuthUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO user (username, account_non_expired, account_non_locked, credentials_non_expired, enabled, password) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
@@ -47,5 +48,10 @@ public class AuthorityUserDaoJdbc implements AuthorityUserDao {
         }
 
 
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findById(UUID id) {
+        return Optional.empty();
     }
 }
