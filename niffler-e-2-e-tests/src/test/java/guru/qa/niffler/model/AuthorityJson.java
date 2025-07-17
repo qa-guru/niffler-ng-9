@@ -12,9 +12,9 @@ public record AuthorityJson (
 
   public static AuthorityJson fromEntity(AuthorityEntity entity) {
     return new AuthorityJson(
-            entity.getUserId(),
+            entity.getId(),
             entity.getAuthority(),
-            entity.getUser()
+            entity.getUserId()
     );
   }
 }

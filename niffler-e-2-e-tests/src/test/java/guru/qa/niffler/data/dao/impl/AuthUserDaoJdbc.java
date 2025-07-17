@@ -6,13 +6,15 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class AuthorityUserDaoJdbc implements AuthUserDao {
+public class AuthUserDaoJdbc implements AuthUserDao {
     private final Connection connection;
 
-    public AuthorityUserDaoJdbc(Connection connection) {
+    public AuthUserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -53,5 +55,35 @@ public class AuthorityUserDaoJdbc implements AuthUserDao {
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return Optional.empty();
+    }
+
+    private AuthUserEntity getAuthUserEntityFromResultSet(ResultSet rs) throws SQLException {
+        AuthUserEntity result = new AuthUserEntity();
+        result.setId(rs.getObject("id", UUID.class));
+        result.setUsername(rs.getString("username"));
+        result.setPassword(rs.getString("password"));
+        result.setEnabled(rs.getBoolean("enabled"));
+        result.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+        result.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+        result.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+        return result;
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * from user")){
+            ps.execute();
+            List<AuthUserEntity> resultList = new ArrayList<>();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    AuthUserEntity ce = getAuthUserEntityFromResultSet(rs);
+                    resultList.add(ce);
+                }
+                return resultList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
