@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
@@ -105,6 +105,29 @@ public class CategoryDaoJdbc implements CategoryDao {
         "SELECT * FROM category WHERE username = ?"
     )) {
       ps.setString(1, username);
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        List<CategoryEntity> categoryList = new ArrayList<>();
+        if (rs.next()) {
+          CategoryEntity ce = new CategoryEntity();
+          ce.setId(rs.getObject("id", UUID.class));
+          ce.setUsername(rs.getString("username"));
+          ce.setName(rs.getString("name"));
+          ce.setArchived(rs.getBoolean("archived"));
+          categoryList.add(ce);
+        }
+        return categoryList;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<CategoryEntity> findAll() {
+    try (PreparedStatement ps = connection.prepareStatement(
+        "SELECT * FROM category"
+    )) {
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
         List<CategoryEntity> categoryList = new ArrayList<>();

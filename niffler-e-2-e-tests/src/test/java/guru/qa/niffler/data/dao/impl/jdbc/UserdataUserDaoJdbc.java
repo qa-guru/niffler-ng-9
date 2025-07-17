@@ -1,14 +1,16 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
-import guru.qa.niffler.data.dao.UserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.dao.UserdataUserDao;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserdataUserDaoJdbc implements UserDao {
+public class UserdataUserDaoJdbc implements UserdataUserDao {
 
   private final Connection connection;
 
@@ -17,11 +19,11 @@ public class UserdataUserDaoJdbc implements UserDao {
   }
 
   @Override
-  public UserEntity createUser(UserEntity user) {
+  public UdUserEntity create(UdUserEntity user) {
     try (PreparedStatement ps = connection.prepareStatement(
-            "INSERT INTO user (username, currency, full_name, firstname, surname, photo, photo_small) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            Statement.RETURN_GENERATED_KEYS
+        "INSERT INTO user (username, currency, full_name, firstname, surname, photo, photo_small) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        Statement.RETURN_GENERATED_KEYS
     )) {
       ps.setString(1, user.getUsername());
       ps.setObject(2, user.getCurrency());
@@ -49,7 +51,7 @@ public class UserdataUserDaoJdbc implements UserDao {
   }
 
   @Override
-  public Optional<UserEntity> findById(UUID id) {
+  public Optional<UdUserEntity> findById(UUID id) {
     try (PreparedStatement ps = connection.prepareStatement(
             "SELECT * FROM user WHERE id = ?"
     )) {
@@ -57,7 +59,7 @@ public class UserdataUserDaoJdbc implements UserDao {
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
-          UserEntity ue = new UserEntity();
+          UdUserEntity ue = new UdUserEntity();
           ue.setId(rs.getObject("id", UUID.class));
           ue.setUsername(rs.getString("username"));
           ue.setCurrency(rs.getObject("currency", CurrencyValues.class));
@@ -75,7 +77,33 @@ public class UserdataUserDaoJdbc implements UserDao {
   }
 
   @Override
-  public Optional<UserEntity> findByUsername(String username) {
+  public List<UdUserEntity> findAll() {
+    try (PreparedStatement ps = connection.prepareStatement(
+        "SELECT * FROM user"
+    )) {
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        List<UdUserEntity> usersList = new ArrayList<>();
+        if (rs.next()) {
+          UdUserEntity ue = new UdUserEntity();
+          ue.setId(rs.getObject("id", UUID.class));
+          ue.setUsername(rs.getString("username"));
+          ue.setCurrency(rs.getObject("currency", CurrencyValues.class));
+          ue.setFullname(rs.getString("full_name"));
+          ue.setFirstname(rs.getString("firstname"));
+          ue.setSurname(rs.getString("surname"));
+          ue.setPhoto(rs.getBytes("photo"));
+          ue.setPhotoSmall(rs.getBytes("photo_small"));
+          usersList.add(ue);
+        } return usersList;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public Optional<UdUserEntity> findByUsername(String username) {
     try (PreparedStatement ps = connection.prepareStatement(
             "SELECT * FROM user WHERE username = ?"
     )) {
@@ -83,7 +111,7 @@ public class UserdataUserDaoJdbc implements UserDao {
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
-          UserEntity ue = new UserEntity();
+          UdUserEntity ue = new UdUserEntity();
           ue.setId(rs.getObject("id", UUID.class));
           ue.setUsername(rs.getString("username"));
           ue.setCurrency(rs.getObject("currency", CurrencyValues.class));
@@ -101,9 +129,9 @@ public class UserdataUserDaoJdbc implements UserDao {
   }
 
   @Override
-  public void deleteUser(UserEntity user) {
+  public void delete(UdUserEntity user) {
     try (PreparedStatement ps = connection.prepareStatement(
-            "DELETE FROM user WHERE id = ?"
+        "DELETE FROM user WHERE id = ?"
     )) {
       ps.setObject(1, user.getId());
       ps.execute();
