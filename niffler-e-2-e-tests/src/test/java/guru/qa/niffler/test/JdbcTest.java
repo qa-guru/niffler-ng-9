@@ -1,5 +1,6 @@
 package guru.qa.niffler.test;
 
+import com.github.javafaker.Faker;
 import guru.qa.niffler.model.spend.CategoryJson;
 import guru.qa.niffler.model.spend.SpendJson;
 import guru.qa.niffler.model.userdata.UserJson;
@@ -13,10 +14,13 @@ import java.util.UUID;
 import static guru.qa.niffler.model.CurrencyValues.*;
 
 public class JdbcTest {
-  @Test
-  void spendSpringJdbcTest(){
-    SpendDbClient spendDbClient = new SpendDbClient();
 
+  private final SpendDbClient spendDbClient = new SpendDbClient();
+  private final UserDbClient usersDbClient = new UserDbClient();
+
+
+  @Test
+  void spendCreationSpringJdbcTest() {
     SpendJson json = spendDbClient.createSpendSpringJdbc(
         new SpendJson(
             UUID.randomUUID(),
@@ -37,12 +41,51 @@ public class JdbcTest {
   }
 
   @Test
-  void springJdbcTest() {
-    UserDbClient usersDbClient = new UserDbClient();
-    UserJson user = usersDbClient.createUserSpringJdbc(
+  void categoryCreationJdbcTest() {
+    CategoryJson json = spendDbClient.createCategory(
+        new CategoryJson(
+            UUID.randomUUID(),
+            "Test category 1",
+            "test1",
+            false
+        )
+    );
+    System.out.println(json);
+  }
+
+  @Test
+  void deleteCategorySpringJdbcTest () {
+    CategoryJson json = spendDbClient.createCategory(
+        new CategoryJson(
+            UUID.randomUUID(),
+            new Faker().funnyName().name(),
+            "test1",
+            false
+        )
+    );
+    System.out.println(json);
+    spendDbClient.deleteCategorySpringJdbc(json);
+  }
+
+  @Test
+  void categoryCreationSpringJdbcTest() {
+    CategoryJson categoryJson = spendDbClient.createCategorySpringJdbc(
+        new CategoryJson(
+            UUID.randomUUID(),
+            "Test Cat",
+            "test1",
+            false
+        )
+    );
+    System.out.println(categoryJson);
+  }
+
+  @Test
+  void chainedTxUserCreationJdbcTest() {
+    UserJson user = usersDbClient.createUserChainedTx(
         new UserJson(
             null,
-            "valentin-7",
+            "valentin-8",
             RUB,
             null,
             null,
