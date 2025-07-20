@@ -9,7 +9,6 @@ import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,7 +28,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, authority[i].getUserId());
+            ps.setObject(1, authority[i].getUser());
             ps.setString(2, authority[i].getAuthority().name());
           }
 

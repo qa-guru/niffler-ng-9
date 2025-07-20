@@ -5,7 +5,7 @@ import guru.qa.niffler.model.CurrencyValues;
 
 import java.util.UUID;
 
-public record UserJson(
+public record UdUserJson(
     UUID id,
     String username,
     CurrencyValues currency,
@@ -15,8 +15,8 @@ public record UserJson(
     byte[] photo,
     byte[] photoSmall) {
 
-  public static UserJson fromEntity(UdUserEntity entity) {
-    return new UserJson(
+  public static UdUserJson fromEntity(UdUserEntity entity) {
+    return new UdUserJson(
         entity.getId(),
         entity.getUsername(),
         entity.getCurrency(),

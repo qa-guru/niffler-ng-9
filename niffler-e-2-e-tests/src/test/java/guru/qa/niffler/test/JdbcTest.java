@@ -1,14 +1,16 @@
 package guru.qa.niffler.test;
 
 import com.github.javafaker.Faker;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.model.spend.CategoryJson;
 import guru.qa.niffler.model.spend.SpendJson;
-import guru.qa.niffler.model.userdata.UserJson;
+import guru.qa.niffler.model.userdata.UdUserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static guru.qa.niffler.model.CurrencyValues.*;
@@ -41,11 +43,17 @@ public class JdbcTest {
   }
 
   @Test
+  void authRepositoryShouldReturnAllUsersWithAuthorities() {
+    List<AuthUserEntity> users = usersDbClient.findAll();
+    System.out.println(users);
+  }
+
+  @Test
   void categoryCreationJdbcTest() {
     CategoryJson json = spendDbClient.createCategory(
         new CategoryJson(
             UUID.randomUUID(),
-            "Test category 1",
+            "Test category 123",
             "test1",
             false
         )
@@ -82,8 +90,8 @@ public class JdbcTest {
 
   @Test
   void chainedTxUserCreationJdbcTest() {
-    UserJson user = usersDbClient.createUserChainedTx(
-        new UserJson(
+    UdUserJson user = usersDbClient.createUserChainedTx(
+        new UdUserJson(
             null,
             "valentin-8",
             RUB,
