@@ -27,6 +27,14 @@ public class AuthorityEntity implements Serializable {
   @JoinColumn(name = "user_id")
   private AuthUserEntity user;
 
+  public AuthorityEntity(Authority authority, AuthUserEntity user) {
+    this.authority = authority;
+    this.user = user;
+  }
+
+  public AuthorityEntity() {
+  }
+
   @Override
   public final boolean equals(Object o) {
     if (this == o) return true;

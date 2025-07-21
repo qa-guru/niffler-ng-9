@@ -1,6 +1,9 @@
 package guru.qa.niffler.model.auth;
 
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+
+import java.util.List;
 import java.util.UUID;
 
 public record AuthUserJson(
@@ -10,7 +13,8 @@ public record AuthUserJson(
     Boolean enabled,
     Boolean accountNonExpired,
     Boolean accountNonLocked,
-    Boolean credentialsNonExpired) {
+    Boolean credentialsNonExpired,
+    List<AuthorityEntity> authorities) {
 
   public static AuthUserJson fromEntity(AuthUserEntity entity) {
     return new AuthUserJson(
@@ -20,7 +24,8 @@ public record AuthUserJson(
         entity.getEnabled(),
         entity.getAccountNonExpired(),
         entity.getAccountNonLocked(),
-        entity.getCredentialsNonExpired()
+        entity.getCredentialsNonExpired(),
+        entity.getAuthorities()
     );
   }
 }

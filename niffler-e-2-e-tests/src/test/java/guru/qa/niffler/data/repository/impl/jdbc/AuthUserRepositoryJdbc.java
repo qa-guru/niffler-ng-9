@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.repository.impl;
+package guru.qa.niffler.data.repository.impl.jdbc;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -85,8 +85,8 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
       ps.setObject(1, id);
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
-        AuthUserEntity user = null;
         List<AuthorityEntity> authorityEntities = new ArrayList<>();
+        AuthUserEntity user = null;
         while (rs.next()) {
           if (user == null) {
             user = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
@@ -180,7 +180,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         List<AuthUserEntity> usersEntities = new ArrayList<>();
         AuthUserEntity user = null;
         while (rs.next()) {
-          if(usersEntities.isEmpty() || !usersEntities.getLast().getUsername().equals(rs.getString("username"))) {
+          if (usersEntities.isEmpty() || !usersEntities.getLast().getUsername().equals(rs.getString("username"))) {
             user = AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow());
             usersEntities.add(user);
           } else {
