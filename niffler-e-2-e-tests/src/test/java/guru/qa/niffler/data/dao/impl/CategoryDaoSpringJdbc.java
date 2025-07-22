@@ -1,9 +1,9 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.UserdataUserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,44 +16,40 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
+public class CategoryDaoSpringJdbc implements CategoryDao {
 
   private static final Config CFG = Config.getInstance();
-  private static final String URL = CFG.userdataJdbcUrl();
+  private static final String URL = CFG.spendJdbcUrl();
 
   @Override
-  public UserEntity create(UserEntity user) {
+  public CategoryEntity create(CategoryEntity category) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
-          "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
-              "VALUES (?,?,?,?,?,?,?)",
+          "INSERT INTO category (username, name, archived) " +
+              "VALUES (?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS
       );
-      ps.setString(1, user.getUsername());
-      ps.setString(2, user.getCurrency().name());
-      ps.setString(3, user.getFirstname());
-      ps.setString(4, user.getSurname());
-      ps.setBytes(5, user.getPhoto());
-      ps.setBytes(6, user.getPhotoSmall());
-      ps.setString(7, user.getFullname());
+      ps.setString(1, category.getUsername());
+      ps.setString(2, category.getName());
+      ps.setBoolean(3, category.isArchived());
       return ps;
     }, kh);
 
     final UUID generatedKey = (UUID) kh.getKeys().get("id");
-    user.setId(generatedKey);
-    return user;
+    category.setId(generatedKey);
+    return category;
   }
 
   @Override
-  public Optional<UserEntity> findById(UUID id) {
+  public Optional<CategoryEntity> findCategoryById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
     try {
       return Optional.ofNullable(
           jdbcTemplate.queryForObject(
-              "SELECT * FROM \"user\" WHERE id = ?",
-              UserdataUserEntityRowMapper.instance,
+              "SELECT * FROM \"category\" WHERE id = ?",
+              CategoryEntityRowMapper.instance,
               id
           )
       );
@@ -63,11 +59,11 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
   }
 
   @Override
-  public List<UserEntity> findAll() {
+  public List<CategoryEntity> findAll() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
     return jdbcTemplate.query(
-        "SELECT * FROM \"user\"",
-        UserdataUserEntityRowMapper.instance
+        "SELECT * FROM \"category\"",
+        CategoryEntityRowMapper.instance
     );
   }
 }
