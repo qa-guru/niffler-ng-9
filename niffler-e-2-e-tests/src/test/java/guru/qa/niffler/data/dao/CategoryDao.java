@@ -12,4 +12,6 @@ public interface CategoryDao {
   Optional<CategoryEntity> findCategoryById(UUID id);
 
   List<CategoryEntity> findAll();
+
+  CategoryEntity update(CategoryEntity category);
 }

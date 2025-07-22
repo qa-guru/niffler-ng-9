@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.fake;
 
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
@@ -42,7 +42,7 @@ public class JdbcTest {
   static UsersDbClient usersDbClient = new UsersDbClient();
 
   @ValueSource(strings = {
-      "valentin-10"
+      "valentin-11"
   })
   @ParameterizedTest
   void springJdbcTest(String uname) {
@@ -53,5 +53,6 @@ public class JdbcTest {
 
     usersDbClient.addIncomeInvitation(user, 1);
     usersDbClient.addOutcomeInvitation(user, 1);
+    usersDbClient.addFriend(user, 1);
   }
 }
