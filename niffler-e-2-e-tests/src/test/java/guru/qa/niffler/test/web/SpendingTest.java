@@ -6,6 +6,7 @@ import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,6 @@ public class SpendingTest {
   private static final Config CFG = Config.getInstance();
 
   @User(
-      username = "duck",
       spendings = @Spending(
           amount = 89990.00,
           description = "Advanced 9 поток!",
@@ -23,13 +23,14 @@ public class SpendingTest {
       )
   )
   @Test
-  void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
+  void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
+    final SpendJson spend = user.testData().spendings().getFirst();
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
+        .successLogin(user.username(), user.testData().password())
         .checkThatPageLoaded()
-        .editSpending(spendJson.description())
+        .editSpending(spend.description())
         .setNewSpendingDescription(newDescription)
         .save()
         .checkThatTableContainsSpending(newDescription);
