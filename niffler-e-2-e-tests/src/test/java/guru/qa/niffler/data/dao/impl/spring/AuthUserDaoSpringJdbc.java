@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.entity.auth.UserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.auth.AuthUserEntityMapRowMapper;
 import guru.qa.niffler.data.mapper.auth.AuthUserEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
@@ -22,7 +22,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public UserEntity createAuthUser(UserEntity user) {
+  public AuthUserEntity createAuthUser(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
@@ -46,7 +46,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   }
 
   @Override
-  public Optional<UserEntity> findById(UUID id) {
+  public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
@@ -58,7 +58,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   }
 
   @Override
-  public Optional<UserEntity> findByUsername(String username) {
+  public Optional<AuthUserEntity> findByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
@@ -70,7 +70,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   }
 
   @Override
-  public List<UserEntity> findAll() {
+  public List<AuthUserEntity> findAll() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     return jdbcTemplate.queryForList(
         "SELECT * FROM \"user\"").stream()
@@ -79,7 +79,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   }
 
   @Override
-  public void deleteUser(UserEntity user) {
+  public void deleteUser(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     jdbcTemplate.update(
         "DELETE FROM \"user\" WHERE id = ?",

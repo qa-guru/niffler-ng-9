@@ -1,12 +1,12 @@
 package guru.qa.niffler.data.mapper.auth;
 
-import guru.qa.niffler.data.entity.auth.UserEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.MapRowMapper;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class AuthUserEntityMapRowMapper<T> implements MapRowMapper<UserEntity> {
+public class AuthUserEntityMapRowMapper<T> implements MapRowMapper<AuthUserEntity> {
 
   public static final AuthUserEntityMapRowMapper instance = new AuthUserEntityMapRowMapper();
 
@@ -14,8 +14,8 @@ public class AuthUserEntityMapRowMapper<T> implements MapRowMapper<UserEntity> {
   }
 
   @Override
-  public UserEntity mapRow(Map<String, Object> row) {
-    UserEntity result = new UserEntity();
+  public AuthUserEntity mapRow(Map<String, Object> row) {
+    AuthUserEntity result = new AuthUserEntity();
     result.setId((UUID) row.get("id"));
     result.setUsername((String) row.get("username"));
     result.setPassword((String) row.get("password"));

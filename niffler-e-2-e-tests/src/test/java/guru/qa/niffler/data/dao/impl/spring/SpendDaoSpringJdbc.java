@@ -6,12 +6,10 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.spend.SpendEntityMapRowMapper;
 import guru.qa.niffler.data.mapper.spend.SpendEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
-import guru.qa.niffler.model.CurrencyValues;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -37,7 +35,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
           ps.setObject(2, spend.getCategory().getId());
           ps.setObject(3, spend.getCurrency().name());
           ps.setString(4, spend.getDescription());
-          ps.setDate(5, spend.getSpendDate());
+          ps.setDate(5, new java.sql.Date(spend.getSpendDate().getTime()));
           ps.setString(6, spend.getUsername());
           return ps;
         }, kh);
