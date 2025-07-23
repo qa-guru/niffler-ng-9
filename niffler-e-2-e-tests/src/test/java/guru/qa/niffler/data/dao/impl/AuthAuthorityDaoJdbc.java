@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.dao.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.Authority;
 
@@ -10,28 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
-    private final Connection connection;
+import static guru.qa.niffler.data.tpl.Connections.holder;
 
-    public AuthAuthorityDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
+public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
+    private static final Config CFG = Config.getInstance();
 
     @Override
     public void create(AuthorityEntity... authority) {
-        for (AuthorityEntity authorityEntity : authority) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO authority (authority, user_id) " +
-                            "VALUES (?, ?)"
-            )) {
-                ps.setString(1, authorityEntity.getAuthority().name());
-                ps.setObject(2, authorityEntity.getUserId().getId());
-
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+            for (AuthorityEntity a : authority) {
+                ps.setObject(1, a.getUserId());
+                ps.setString(2, a.getAuthority().name());
+                ps.addBatch();
+                ps.clearParameters();
             }
-
+            ps.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -39,15 +36,13 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         AuthorityEntity result = new AuthorityEntity();
         result.setId(rs.getObject("id", UUID.class));
         result.setAuthority(Authority.valueOf(rs.getString("authority")));
-        AuthUserEntity user = new AuthUserEntity();
-        user.setId(rs.getObject("user_id", UUID.class));
-        result.setUserId(user);
+        result.setUserId(rs.getObject("user_id", UUID.class));
         return result;
     }
 
     @Override
     public List<AuthorityEntity> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * from authority")){
             ps.execute();
             List<AuthorityEntity> resultList = new ArrayList<>();
