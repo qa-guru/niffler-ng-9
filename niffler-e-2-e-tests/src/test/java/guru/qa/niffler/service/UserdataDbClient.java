@@ -42,6 +42,6 @@ public class UserdataDbClient {
   }
 
   public void createIncomeFriendshipInvitation(UdUserEntity requester, UdUserEntity addressee) {
-    udUserRepository.addIncomeInvitation(requester, addressee);
+    udUserRepository.addInvitation(requester, addressee);
   }
 }

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
+import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
@@ -199,23 +201,51 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
-  public void addIncomeInvitation(UdUserEntity requester, UdUserEntity addressee) {
-    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-        "INSERT INTO friendship (addressee_id, requester_id, created_date, status) " +
-            "VALUES (?, ?, ?, ?)"
-    )) {
-      ps.setObject(1, addressee.getId());
-      ps.setObject(2, requester.getId());
-      ps.setDate(3, new Date(System.currentTimeMillis()));
-      ps.setString(4, "PENDING");
-      ps.execute();
+  public UdUserEntity update(UdUserEntity user) {
+    try (PreparedStatement usersPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+            """
+                  UPDATE "user"
+                    SET currency    = ?,
+                        firstname   = ?,
+                        surname     = ?,
+                        photo       = ?,
+                        photo_small = ?
+                    WHERE id = ?
+                """);
+
+         PreparedStatement friendsPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                 """
+                     INSERT INTO friendship (requester_id, addressee_id, status)
+                     VALUES (?, ?, ?)
+                     ON CONFLICT (requester_id, addressee_id)
+                         DO UPDATE SET status = ?
+                     """)
+    ) {
+      usersPs.setString(1, user.getCurrency().name());
+      usersPs.setString(2, user.getFirstname());
+      usersPs.setString(3, user.getSurname());
+      usersPs.setBytes(4, user.getPhoto());
+      usersPs.setBytes(5, user.getPhotoSmall());
+      usersPs.setObject(6, user.getId());
+      usersPs.executeUpdate();
+
+      for (FriendshipEntity fe : user.getFriendshipRequests()) {
+        friendsPs.setObject(1, user.getId());
+        friendsPs.setObject(2, fe.getAddressee().getId());
+        friendsPs.setString(3, fe.getStatus().name());
+        friendsPs.setString(4, fe.getStatus().name());
+        friendsPs.addBatch();
+        friendsPs.clearParameters();
+      }
+      friendsPs.executeBatch();
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
+    return user;
   }
 
   @Override
-  public void addOutcomeInvitation(UdUserEntity requester, UdUserEntity addressee) {
+  public void addInvitation(UdUserEntity requester, UdUserEntity addressee) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
         "INSERT INTO friendship (addressee_id, requester_id, created_date, status) " +
             "VALUES (?, ?, ?, ?)"
@@ -223,7 +253,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
       ps.setObject(1, addressee.getId());
       ps.setObject(2, requester.getId());
       ps.setDate(3, new Date(System.currentTimeMillis()));
-      ps.setString(4, "PENDING");
+      ps.setObject(4, PENDING);
       ps.execute();
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -234,12 +264,16 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
         "INSERT INTO friendship (addressee_id, requester_id, created_date, status) " +
-            "VALUES (?, ?, ?, ?)"
+            "VALUES (?, ?, ?, ?), (?, ?, ?, ?)"
     )) {
       ps.setObject(1, addressee.getId());
       ps.setObject(2, requester.getId());
       ps.setDate(3, new Date(System.currentTimeMillis()));
-      ps.setString(4, "ACCEPTED");
+      ps.setObject(4, ACCEPTED);
+      ps.setObject(5, requester.getId());
+      ps.setObject(6, addressee.getId());
+      ps.setDate(7, new Date(System.currentTimeMillis()));
+      ps.setObject(8, ACCEPTED);
       ps.execute();
     } catch (SQLException e) {
       throw new RuntimeException(e);
