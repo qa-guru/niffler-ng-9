@@ -77,7 +77,7 @@ public class AuthDbClient {
           authUser.setAccountNonLocked(true);
           authUser.setCredentialsNonExpired(true);
 
-          AuthUserEntity createdAuthUser = authUserRepository.createAuthUser(authUser);
+          AuthUserEntity createdAuthUser = authUserRepository.create(authUser);
 
           AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
               e -> {
@@ -106,7 +106,7 @@ public class AuthDbClient {
     return xaTransactionTemplate.execute(() -> {
           AuthUserEntity ue = AuthUserEntity.fromJson(json);
           ue.setPassword(pe.encode(json.password()));
-          return AuthUserJson.fromEntity(authUserRepository.createAuthUser(ue));
+          return AuthUserJson.fromEntity(authUserRepository.create(ue));
         }
     );
   }
@@ -150,7 +150,7 @@ public class AuthDbClient {
 
   public void deleteUser(AuthUserJson json) {
     AuthUserEntity ue = AuthUserEntity.fromJson(json);
-    authUserRepository.deleteUser(ue);
+    authUserRepository.delete(ue);
 
   }
 

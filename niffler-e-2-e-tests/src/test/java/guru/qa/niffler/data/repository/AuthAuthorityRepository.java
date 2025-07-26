@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AuthAuthorityRepository {
-  void create(AuthorityEntity... authority);
+  void create(AuthorityEntity... authorities);
 
   List<AuthorityEntity> findByUserId(UUID userId);
 

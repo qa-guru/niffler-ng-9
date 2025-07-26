@@ -135,7 +135,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     }
 
     @Override
-    public void addInvitation(UdUserEntity requester, UdUserEntity addressee) {
+    public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(

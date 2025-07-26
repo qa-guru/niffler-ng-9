@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthUserRepository {
-  AuthUserEntity createAuthUser(AuthUserEntity user);
+  AuthUserEntity create(AuthUserEntity user);
 
   Optional<AuthUserEntity> findById(UUID id);
 
@@ -15,5 +15,5 @@ public interface AuthUserRepository {
 
   List<AuthUserEntity> findAll();
 
-  void deleteUser(AuthUserEntity user);
+  void delete(AuthUserEntity user);
 }

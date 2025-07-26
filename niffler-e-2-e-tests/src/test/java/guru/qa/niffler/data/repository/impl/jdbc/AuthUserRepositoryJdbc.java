@@ -22,7 +22,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public AuthUserEntity createAuthUser(AuthUserEntity entity) {
+  public AuthUserEntity create(AuthUserEntity entity) {
     try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
         "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
             "VALUES (?, ?, ?, ?, ?, ?)",
@@ -205,7 +205,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
   }
 
   @Override
-  public void deleteUser(AuthUserEntity entity) {
+  public void delete(AuthUserEntity entity) {
     try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
         "DELETE FROM user WHERE id = ?"
     )) {

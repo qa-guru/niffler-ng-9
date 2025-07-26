@@ -125,7 +125,7 @@ public class JdbcTest {
     requester.setId(UUID.fromString("9828191e-2e48-4b3c-a372-c782601e2476"));
     UdUserEntity addressee = new UdUserEntity();
     addressee.setId(UUID.fromString("1579929d-e4c0-4fd7-9870-684e5f426535"));
-    userdataDbClient.createIncomeFriendshipInvitation(requester, addressee);
+    userdataDbClient.sendInvitation(requester, addressee);
   }
 
   @Test

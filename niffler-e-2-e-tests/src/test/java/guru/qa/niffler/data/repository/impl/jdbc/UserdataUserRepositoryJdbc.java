@@ -245,7 +245,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
-  public void addInvitation(UdUserEntity requester, UdUserEntity addressee) {
+  public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
         "INSERT INTO friendship (addressee_id, requester_id, created_date, status) " +
             "VALUES (?, ?, ?, ?)"

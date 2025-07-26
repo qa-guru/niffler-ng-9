@@ -24,7 +24,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public AuthUserEntity createAuthUser(AuthUserEntity user) {
+  public AuthUserEntity create(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
@@ -227,7 +227,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   }
 
   @Override
-  public void deleteUser(AuthUserEntity user) {
+  public void delete(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     jdbcTemplate.update(
         "DELETE FROM \"user\" WHERE id = ?",

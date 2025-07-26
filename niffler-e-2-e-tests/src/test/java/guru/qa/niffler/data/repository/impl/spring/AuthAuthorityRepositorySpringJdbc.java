@@ -23,20 +23,20 @@ public class AuthAuthorityRepositorySpringJdbc implements AuthAuthorityRepositor
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public void create(AuthorityEntity... authority) {
+  public void create(AuthorityEntity... authorities) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     jdbcTemplate.batchUpdate(
-        "INSERT INTO \"authority\" (user_id, authority) VALUES (? , ?)",
+        "INSERT INTO \"authorities\" (user_id, authorities) VALUES (? , ?)",
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, authority[i].getUser().getId());
-            ps.setString(2, authority[i].getAuthority().name());
+            ps.setObject(1, authorities[i].getUser().getId());
+            ps.setString(2, authorities[i].getAuthority().name());
           }
 
           @Override
           public int getBatchSize() {
-            return authority.length;
+            return authorities.length;
           }
         }
     );

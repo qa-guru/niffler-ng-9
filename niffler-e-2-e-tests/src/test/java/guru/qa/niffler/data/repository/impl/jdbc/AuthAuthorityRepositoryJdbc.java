@@ -20,10 +20,10 @@ public class AuthAuthorityRepositoryJdbc implements AuthAuthorityRepository {
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public void create(AuthorityEntity... authority) {
+  public void create(AuthorityEntity... authorities) {
     try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-        "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)")) {
-      for (AuthorityEntity a : authority) {
+        "INSERT INTO \"authorities\" (user_id, authorities) VALUES (?, ?)")) {
+      for (AuthorityEntity a : authorities) {
         ps.setObject(1, a.getUser());
         ps.setString(2, a.getAuthority().name());
         ps.addBatch();
