@@ -2,6 +2,8 @@ package guru.qa.niffler.data.tpl;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +32,12 @@ public class DataSources {
           props.put("password", "secret");
           dsBean.setXaProperties(props);
           dsBean.setMaxPoolSize(10);
-
+            try {
+                InitialContext context = new InitialContext();
+                context.bind("java:comp/env/jdbc/" + uniqueId, dsBean);
+            } catch (NamingException e) {
+                throw new RuntimeException(e);
+            }
           return dsBean;
         }
     );
