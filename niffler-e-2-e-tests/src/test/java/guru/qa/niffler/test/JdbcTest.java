@@ -1,49 +1,30 @@
 package guru.qa.niffler.test;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.auth.AuthUserJson;
 import guru.qa.niffler.model.spend.CategoryJson;
-import guru.qa.niffler.model.spend.SpendJson;
 import guru.qa.niffler.model.userdata.UdUserJson;
-import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.AuthDbClient;
+import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserdataDbClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import static guru.qa.niffler.model.CurrencyValues.*;
+import static guru.qa.niffler.model.CurrencyValues.RUB;
+import static guru.qa.niffler.utils.RandomDataUtils.*;
 
 public class JdbcTest {
 
   private final SpendDbClient spendDbClient = new SpendDbClient();
   private final AuthDbClient authDbClient = new AuthDbClient();
   private final UserdataDbClient userdataDbClient = new UserdataDbClient();
-
-
-  @Test
-  void spendCreationSpringJdbcTest() {
-    SpendJson json = spendDbClient.createSpendSpringJdbc(
-        new SpendJson(
-            UUID.randomUUID(),
-            new Date(),
-            new CategoryJson(
-                UUID.fromString("bd79d3f7-1004-44ec-a69f-270974b6f585"),
-                null,
-                null,
-                false
-            ),
-            RUB,
-            101.01,
-            "Test",
-            "test1"
-        )
-    );
-    System.out.println(json);
-  }
 
   @Test
   void authRepositoryShouldReturnAllUsersWithAuthorities() {
@@ -55,7 +36,7 @@ public class JdbcTest {
   void userShouldBeCreatedWithAuthorities() {
     AuthUserJson json = new AuthUserJson(
         UUID.randomUUID(),
-        "test93",
+        "test934",
         "12345",
         true,
         true,
@@ -103,7 +84,7 @@ public class JdbcTest {
 
   @Test
   void udFindByIdMethodShouldReturnAllFriendships() {
-    Optional<UdUserEntity> ue = userdataDbClient.findById(UUID.fromString("1579929d-e4c0-4fd7-9870-684e5f426535"));
+    Optional<UdUserJson> ue = userdataDbClient.findById(UUID.fromString("1579929d-e4c0-4fd7-9870-684e5f426535"));
     System.out.println(ue);
   }
 
@@ -121,10 +102,26 @@ public class JdbcTest {
 
   @Test
   void incomeFriendshipShouldBeCreatedSpring() {
-    UdUserEntity requester = new UdUserEntity();
-    requester.setId(UUID.fromString("9828191e-2e48-4b3c-a372-c782601e2476"));
-    UdUserEntity addressee = new UdUserEntity();
-    addressee.setId(UUID.fromString("1579929d-e4c0-4fd7-9870-684e5f426535"));
+    UdUserJson requester = new UdUserJson(
+            UUID.fromString("9828191e-2e48-4b3c-a372-c782601e2476"),
+            randomUsername(),
+            RUB,
+            randomName() + randomSurname(),
+            randomName(),
+            randomSurname(),
+            new byte[]{},
+            new byte[]{}
+    );
+    UdUserJson addressee = new UdUserJson(
+            UUID.fromString("1579929d-e4c0-4fd7-9870-684e5f426535"),
+            randomUsername(),
+            RUB,
+            randomName() + randomSurname(),
+            randomName(),
+            randomSurname(),
+            new byte[]{},
+            new byte[]{}
+    );
     userdataDbClient.sendInvitation(requester, addressee);
   }
 
@@ -139,33 +136,6 @@ public class JdbcTest {
         )
     );
     System.out.println(json);
-  }
-
-  @Test
-  void deleteCategorySpringJdbcTest () {
-    CategoryJson json = spendDbClient.createCategory(
-        new CategoryJson(
-            UUID.randomUUID(),
-            new Faker().funnyName().name(),
-            "test1",
-            false
-        )
-    );
-    System.out.println(json);
-    spendDbClient.deleteCategorySpringJdbc(json);
-  }
-
-  @Test
-  void categoryCreationSpringJdbcTest() {
-    CategoryJson categoryJson = spendDbClient.createCategorySpringJdbc(
-        new CategoryJson(
-            UUID.randomUUID(),
-            "Test Cat",
-            "test1",
-            false
-        )
-    );
-    System.out.println(categoryJson);
   }
 
   @Test

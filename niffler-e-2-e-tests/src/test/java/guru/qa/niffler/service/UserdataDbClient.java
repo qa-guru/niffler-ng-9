@@ -2,9 +2,12 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
+import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
+import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.userdata.UdUserJson;
 
 import java.util.List;
@@ -15,15 +18,21 @@ public class UserdataDbClient {
 
     private static final Config CFG = Config.getInstance();
 
+    private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
     private final UserdataUserRepository udUserRepository = new UserdataUserRepositoryHibernate();
 
     private final JdbcTransactionTemplate jdbcTxTemplate = new JdbcTransactionTemplate(
             CFG.userdataJdbcUrl()
     );
 
+    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+            CFG.authJdbcUrl(),
+            CFG.userdataJdbcUrl()
+    );
+
     public UdUserJson create(UdUserJson user) {
         UdUserEntity ue = UdUserEntity.fromJson(user);
-        return jdbcTxTemplate.execute(() -> {
+        return xaTransactionTemplate.execute(() -> {
                     return UdUserJson.fromEntity(udUserRepository.create(ue));
                 }
         );
@@ -50,13 +59,23 @@ public class UserdataDbClient {
         );
     }
 
-    public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
-        udUserRepository.sendInvitation(requester, addressee);
+    public void sendInvitation(UdUserJson requester, UdUserJson addressee) {
+        jdbcTxTemplate.execute(() -> {
+                    UdUserEntity req = UdUserEntity.fromJson(requester);
+                    UdUserEntity add = UdUserEntity.fromJson(addressee);
+                    udUserRepository.sendInvitation(req, add);
+                    return null;
+                }
+        );
     }
 
     public void addFriend(UdUserJson requester, UdUserJson addressee) {
-        UdUserEntity req = UdUserEntity.fromJson(requester);
-        UdUserEntity add = UdUserEntity.fromJson(addressee);
-        udUserRepository.addFriend(req, add);
+        jdbcTxTemplate.execute(() -> {
+                    UdUserEntity req = UdUserEntity.fromJson(requester);
+                    UdUserEntity add = UdUserEntity.fromJson(addressee);
+                    udUserRepository.addFriend(req, add);
+                    return null;
+                }
+        );
     }
 }
