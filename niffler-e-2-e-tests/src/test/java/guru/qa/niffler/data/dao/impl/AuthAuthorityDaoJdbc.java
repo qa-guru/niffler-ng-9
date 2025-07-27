@@ -3,7 +3,7 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.model.Authority;
+import guru.qa.niffler.data.entity.auth.Authority;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     private static final Config CFG = Config.getInstance();
+    private static final String URL = CFG.authJdbcUrl();
+
 
     @Override
     public void create(AuthorityEntity... authority) {
@@ -21,7 +23,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                 "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (AuthorityEntity a : authority) {
-                ps.setObject(1, a.getUserId());
+                ps.setObject(1, a.getUser().getId());
                 ps.setString(2, a.getAuthority().name());
                 ps.addBatch();
                 ps.clearParameters();
@@ -36,7 +38,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         AuthorityEntity result = new AuthorityEntity();
         result.setId(rs.getObject("id", UUID.class));
         result.setAuthority(Authority.valueOf(rs.getString("authority")));
-        result.setUserId(rs.getObject("user_id", UUID.class));
+//        result.setUserId(rs.getObject("user_id", UUID.class));
         return result;
     }
 
