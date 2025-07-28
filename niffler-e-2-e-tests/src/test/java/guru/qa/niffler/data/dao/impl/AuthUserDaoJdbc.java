@@ -5,6 +5,8 @@ import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +17,14 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoJdbc implements AuthUserDao {
 
   private static final Config CFG = Config.getInstance();
   private static final String URL = CFG.authJdbcUrl();
 
+  @Nonnull
+  @SuppressWarnings("resource")
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
@@ -49,6 +54,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
+  @SuppressWarnings("resource")
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ?")) {
@@ -59,7 +66,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       try (ResultSet rs = ps.getResultSet()) {
 
         if (rs.next()) {
-          return Optional.of(
+          return Optional.ofNullable(
               AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
           );
         } else {
@@ -71,6 +78,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
+  @SuppressWarnings("resource")
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE username = ?")) {
@@ -81,7 +90,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       try (ResultSet rs = ps.getResultSet()) {
 
         if (rs.next()) {
-          return Optional.of(
+          return Optional.ofNullable(
               AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
           );
         } else {
@@ -93,6 +102,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
+  @SuppressWarnings("resource")
   @Override
   public List<AuthUserEntity> findAll() {
     try (PreparedStatement ps = holder(URL).connection().prepareStatement(
