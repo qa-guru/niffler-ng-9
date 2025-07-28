@@ -10,7 +10,13 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.model.SpendJson;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
   private static final Config CFG = Config.getInstance();
@@ -22,8 +28,9 @@ public class SpendDbClient implements SpendClient {
       CFG.spendJdbcUrl()
   );
 
+  @Nonnull
   public SpendJson createSpend(SpendJson spend) {
-    return jdbcTxTemplate.execute(() -> {
+    return requireNonNull(jdbcTxTemplate.execute(() -> {
           SpendEntity spendEntity = SpendEntity.fromJson(spend);
           if (spendEntity.getCategory().getId() == null) {
             CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
@@ -33,6 +40,6 @@ public class SpendDbClient implements SpendClient {
               spendDao.create(spendEntity)
           );
         }
-    );
+    ));
   }
 }

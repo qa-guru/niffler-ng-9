@@ -7,17 +7,21 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
 
   private static final Config CFG = Config.getInstance();
 
   private final EntityManager entityManager = em(CFG.userdataJdbcUrl());
 
+  @Nonnull
   @Override
   public UserEntity create(UserEntity user) {
     entityManager.joinTransaction();
@@ -25,11 +29,13 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     return user;
   }
 
+  @Nonnull
   @Override
   public UserEntity update(UserEntity user) {
     return null;
   }
 
+  @Nonnull
   @Override
   public Optional<UserEntity> findById(UUID id) {
     return Optional.ofNullable(
@@ -37,6 +43,7 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     );
   }
 
+  @Nonnull
   @Override
   public Optional<UserEntity> findByUsername(String username) {
     try {

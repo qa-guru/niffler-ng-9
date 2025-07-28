@@ -19,13 +19,17 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+import static java.util.Objects.requireNonNull;
 
-
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
@@ -45,9 +49,10 @@ public class UsersDbClient implements UsersClient {
       CFG.userdataJdbcUrl()
   );
 
+  @Nonnull
   @Override
   public UserJson createUser(String username, String password) {
-    return xaTransactionTemplate.execute(() -> {
+    return requireNonNull(xaTransactionTemplate.execute(() -> {
           AuthUserEntity authUser = authUserEntity(username, password);
           authUserRepository.create(authUser);
           return UserJson.fromEntity(
@@ -55,9 +60,10 @@ public class UsersDbClient implements UsersClient {
               null
           );
         }
-    );
+    ));
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addIncomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
@@ -84,6 +90,7 @@ public class UsersDbClient implements UsersClient {
     return result;
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addOutcomeInvitation(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
@@ -111,6 +118,7 @@ public class UsersDbClient implements UsersClient {
     return result;
   }
 
+  @Nonnull
   @Override
   public List<UserJson> addFriend(UserJson targetUser, int count) {
     final List<UserJson> result = new ArrayList<>();
