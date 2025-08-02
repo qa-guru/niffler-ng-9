@@ -47,6 +47,6 @@ public class ProfileTest {
                 .checkThatPageLoaded()
                 .clickProfileButton()
                 .checkArchivedSwitcherUnchecked()
-                .checkActiveCategoryVisible(categoryJson.name());;
+                .checkActiveCategoryVisible(categoryJson.name());
     }
 }

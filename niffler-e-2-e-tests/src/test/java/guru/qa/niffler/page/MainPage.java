@@ -24,10 +24,9 @@ public class MainPage {
     return new EditSpendingPage();
   }
 
-  public MainPage checkThatTableContainsSpending(String description) {
+  public void checkThatTableContainsSpending(String description) {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
-    return this;
   }
 
   public ProfilePage clickProfileButton() {

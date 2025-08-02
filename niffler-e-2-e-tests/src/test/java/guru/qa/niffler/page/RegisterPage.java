@@ -1,6 +1,5 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.*;
@@ -39,19 +38,16 @@ public class RegisterPage {
         return new RegisterPage();
     }
 
-    public RegisterPage checkSuccessfullRegistration() {
-        successRegisterText.should(visible);;
+    public void checkSuccessfullRegistration() {
+        successRegisterText.should(visible);
         loginButton.should(visible);
-        return this;
     }
 
-    public RegisterPage checkUsernameAlreadyExistError() {
+    public void checkUsernameAlreadyExistError() {
         formError.shouldHave(text(USERNAME_EXIST));
-        return this;
     }
 
-    public RegisterPage checkPasswordsShouldBeEqualError() {
+    public void checkPasswordsShouldBeEqualError() {
         formError.shouldHave(exactText(PASSWORDS_EQUAL));
-        return this;
     }
 }

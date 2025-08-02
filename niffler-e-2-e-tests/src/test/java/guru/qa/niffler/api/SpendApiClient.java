@@ -95,7 +95,7 @@ public class SpendApiClient {
     return response.body();
   }
 
-  public CategoryJson updateCategory(CategoryJson category) {
+  public void updateCategory(CategoryJson category) {
     final Response<CategoryJson> response;
     try {
       response = spendApi.updateCategory(category)
@@ -104,7 +104,6 @@ public class SpendApiClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
   }
 
   public List<CategoryJson> getAllCategories() {

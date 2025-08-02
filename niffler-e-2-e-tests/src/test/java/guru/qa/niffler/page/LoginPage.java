@@ -31,10 +31,9 @@ public class LoginPage {
     return new LoginPage();
   }
 
-  public LoginPage checkErrorBadCredentials() {
+  public void checkErrorBadCredentials() {
     formError.should(visible);
     formError.shouldHave(text(ERROR_BAD_CREDENTIALS));
-    return this;
   }
 
   public RegisterPage createNewAccount() {

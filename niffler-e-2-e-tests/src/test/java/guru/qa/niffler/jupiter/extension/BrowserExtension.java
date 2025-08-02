@@ -22,14 +22,14 @@ public class BrowserExtension implements
     LifecycleMethodExecutionExceptionHandler {
 
   @Override
-  public void afterEach(ExtensionContext context) throws Exception {
+  public void afterEach(ExtensionContext context) {
     if (WebDriverRunner.hasWebDriverStarted()) {
       Selenide.closeWebDriver();
     }
   }
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
+  public void beforeEach(ExtensionContext context) {
     SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
         .savePageSource(false)
         .screenshots(false)
