@@ -8,6 +8,8 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement menuButton = $("button[aria-label='Menu']");
+  private final SelenideElement profileButton = $("a[href='/profile']");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -26,5 +28,11 @@ public class MainPage {
     spendingTable.$$("tbody tr").find(text(description))
         .should(visible);
     return this;
+  }
+
+  public ProfilePage clickProfileButton() {
+    menuButton.should(visible).click();
+    profileButton.should(visible).click();
+    return new ProfilePage();
   }
 }

@@ -2,7 +2,7 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
@@ -13,9 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class SpendingTest {
 
   private static final Config CFG = Config.getInstance();
+  private static final String CORRECT_PASSWORD = "425928155";
 
   @Spending(
-      username = "duck",
+      username = "vikotoed",
       amount = 89990.00,
       description = "Advanced 9 поток!",
       category = "Обучение"
@@ -25,7 +26,7 @@ public class SpendingTest {
     final String newDescription = ":)";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage("duck", "12345")
+        .fillLoginPage(spendJson.username(), CORRECT_PASSWORD)
         .submit()
         .checkThatPageLoaded()
         .editSpending(spendJson.description())
