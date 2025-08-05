@@ -79,13 +79,11 @@ public class UsersQueueExtension implements
               testCase.setStart(new Date().getTime())
           );
           user.ifPresentOrElse(
-              u -> {
-                ((Map<UserType, StaticUser>) context.getStore(NAMESPACE)
-                        .getOrComputeIfAbsent(
-                                context.getUniqueId(),
-                                key -> new HashMap<>()
-                        )).put(ut, u);
-              },
+              u -> ((Map<UserType, StaticUser>) context.getStore(NAMESPACE)
+                      .getOrComputeIfAbsent(
+                              context.getUniqueId(),
+                              key -> new HashMap<>()
+                      )).put(ut, u),
               () -> {
                 throw new IllegalStateException("Can`t obtain user after 30s.");
               }
