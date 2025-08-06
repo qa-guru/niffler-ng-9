@@ -10,6 +10,7 @@ public class MainPage {
   private final SelenideElement spendingTable = $("#spendings");
   private final SelenideElement menuButton = $("button[aria-label='Menu']");
   private final SelenideElement profileButton = $("a[href='/profile']");
+  private final SelenideElement friendsButton = $("a[href='/people/friends']");
 
   public MainPage checkThatPageLoaded() {
     spendingTable.should(visible);
@@ -33,5 +34,11 @@ public class MainPage {
     menuButton.should(visible).click();
     profileButton.should(visible).click();
     return new ProfilePage();
+  }
+
+  public FriendsPage clickFriendsButton() {
+    menuButton.should(visible).click();
+    friendsButton.should(visible).click();
+    return new FriendsPage();
   }
 }
