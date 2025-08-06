@@ -114,7 +114,13 @@ public class UsersQueueExtension implements
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), StaticUser.class);
+      Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
+      UserType userType = parameterContext.getParameter().getAnnotation(UserType.class);
+      if (map == null || !map.containsKey(userType)) {
+          throw new ParameterResolutionException("No user found for type: " + userType);
+      }
+      return map.get(userType);
   }
 }
