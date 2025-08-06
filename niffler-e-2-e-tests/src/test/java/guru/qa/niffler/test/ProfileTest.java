@@ -6,6 +6,7 @@ import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -21,23 +22,25 @@ public class ProfileTest {
     )
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        ProfilePage profilePage = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(categoryJson.username(), CORRECT_PASSWORD)
                 .submit()
                 .checkThatPageLoaded()
                 .clickProfileButton()
-                .checkCategoryContainerVisible()
-                .getCategoryItemsCount()
+                .checkCategoryContainerVisible();
+
+        int initialSize = profilePage.getCategoryItemsCount();
+
+        profilePage
                 .checkArchivedSwitcherUnchecked()
                 .clickShowArchivedSwitcher()
                 .checkArchivedSwitcherChecked()
-                .checkCategoryCountIncreased()
+                .checkCategoryCountIncreased(initialSize)
                 .checkArchivedCategoryVisible(categoryJson.name());
     }
 
     @Category(
-            username = "vikotoed",
-            archived = false
+            username = "vikotoed"
     )
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson) {

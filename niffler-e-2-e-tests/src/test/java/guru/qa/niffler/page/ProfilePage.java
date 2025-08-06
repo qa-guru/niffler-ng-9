@@ -16,7 +16,6 @@ public class ProfilePage {
     private final SelenideElement categoriesContainer = $$("div.MuiGrid-container").get(1);
     private final ElementsCollection categoriesItems = categoriesContainer.$$(".MuiGrid-item");
     private final SelenideElement showArchivedSwitcher = $(".MuiSwitch-switchBase");
-    private int initialSize;
 
 
     public ProfilePage fillProfileName(String name) {
@@ -36,9 +35,8 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage getCategoryItemsCount() {
-        this.initialSize = categoriesItems.size();
-        return this;
+    public Integer getCategoryItemsCount() {
+        return categoriesItems.size();
     }
 
     public ProfilePage checkArchivedSwitcherUnchecked() {
@@ -56,7 +54,7 @@ public class ProfilePage {
         return new ProfilePage();
     }
 
-    public ProfilePage checkCategoryCountIncreased() {
+    public ProfilePage checkCategoryCountIncreased(Integer initialSize) {
         categoriesItems.shouldHave(sizeGreaterThan(initialSize));
         return this;
     }

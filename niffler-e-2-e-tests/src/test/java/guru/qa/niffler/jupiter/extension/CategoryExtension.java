@@ -19,11 +19,6 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback,
     }
 
     @Override
-    public CategoryJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
-    }
-
-    @Override
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(
                 context.getRequiredTestMethod(),
@@ -34,7 +29,7 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback,
                             null,
                             "Category" + UUID.randomUUID(),
                             anno.username(),
-                            false
+                            anno.archived()
                     );
                     context.getStore(NAMESPACE).put(
                             context.getUniqueId(),
@@ -42,6 +37,11 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback,
                     );
                 }
         );
+    }
+
+    @Override
+    public CategoryJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
     }
 
     @Override
