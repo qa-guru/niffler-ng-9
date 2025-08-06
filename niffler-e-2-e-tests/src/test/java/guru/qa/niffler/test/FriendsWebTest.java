@@ -19,7 +19,7 @@ public class FriendsWebTest {
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
-    void friendsShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) throws InterruptedException {
+    void friendsShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.password())
                 .submit()
@@ -32,7 +32,7 @@ public class FriendsWebTest {
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
-    void friendsTableShouldBeEmptyForNewUser(@UserType() StaticUser user) throws InterruptedException {
+    void friendsTableShouldBeEmptyForNewUser(@UserType() StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.password())
                 .submit()
@@ -44,7 +44,7 @@ public class FriendsWebTest {
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
-    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) throws InterruptedException {
+    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.password())
                 .submit()
@@ -57,7 +57,7 @@ public class FriendsWebTest {
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
-    void outcomeInvitationBePresentInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) throws InterruptedException {
+    void outcomeInvitationBePresentInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.password())
                 .submit()
