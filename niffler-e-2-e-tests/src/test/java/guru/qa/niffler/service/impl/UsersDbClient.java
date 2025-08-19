@@ -8,8 +8,6 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
@@ -35,8 +33,8 @@ public class UsersDbClient implements UsersClient {
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
-  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
+  private final AuthUserRepository authUserRepository = AuthUserRepository.getInstance();
+  private final UserdataUserRepository userdataUserRepository = UserdataUserRepository.getInstance();
 
   private final TransactionTemplate txTemplate = new TransactionTemplate(
       new JdbcTransactionManager(

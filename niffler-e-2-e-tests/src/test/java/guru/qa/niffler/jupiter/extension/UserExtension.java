@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
@@ -41,9 +40,7 @@ public class UserExtension implements
                 DEFAULT_PASSWORD,
                 friends,
                 incomes,
-                outcomes,
-                new ArrayList<>(),
-                new ArrayList<>()
+                outcomes
             );
 
             context.getStore(NAMESPACE).put(

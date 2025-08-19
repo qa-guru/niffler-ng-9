@@ -10,10 +10,15 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
+import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
+
+@ParametersAreNonnullByDefault
 public abstract class RestClient {
 
   protected static final Config CFG = Config.getInstance();
@@ -45,7 +50,7 @@ public abstract class RestClient {
     OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
         .followRedirects(followRedirect);
 
-    if (interceptors != null) {
+    if (isNotEmpty(interceptors)) {
       for (Interceptor interceptor : interceptors) {
         clientBuilder.addNetworkInterceptor(interceptor);
       }
@@ -71,7 +76,27 @@ public abstract class RestClient {
         .build();
   }
 
-  protected <T> T create(final Class<T> service) {
+  @Nonnull
+  public <T> T create(final Class<T> service) {
     return this.retrofit.create(service);
+  }
+
+  @ParametersAreNonnullByDefault
+  public static final class EmtyRestClient extends RestClient {
+    public EmtyRestClient(String baseUrl) {
+      super(baseUrl);
+    }
+
+    public EmtyRestClient(String baseUrl, boolean followRedirect) {
+      super(baseUrl, followRedirect);
+    }
+
+    public EmtyRestClient(String baseUrl, Converter.Factory factory) {
+      super(baseUrl, factory);
+    }
+
+    public EmtyRestClient(String baseUrl, boolean followRedirect, Converter.Factory factory, HttpLoggingInterceptor.Level level, @Nullable Interceptor... interceptors) {
+      super(baseUrl, followRedirect, factory, level, interceptors);
+    }
   }
 }

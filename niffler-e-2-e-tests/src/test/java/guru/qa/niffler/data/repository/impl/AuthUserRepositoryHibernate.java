@@ -16,9 +16,7 @@ import static guru.qa.niffler.data.jpa.EntityManagers.em;
 @ParametersAreNonnullByDefault
 public class AuthUserRepositoryHibernate implements AuthUserRepository {
 
-  private static final Config CFG = Config.getInstance();
-
-  private final EntityManager entityManager = em(CFG.authJdbcUrl());
+  private final EntityManager entityManager = em(Config.getInstance().authJdbcUrl());
 
   @Nonnull
   @Override

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        junitVersion = '5.13.1'
+        junitVersion = '5.10.0'
         allureVersion = '2.29.1'
         selenideVersion = '7.9.3'
         okhttp3Version = '4.12.0'

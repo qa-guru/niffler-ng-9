@@ -1,6 +1,7 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.impl.UsersApiClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 
 import javax.annotation.Nonnull;
@@ -9,8 +10,11 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public interface UsersClient {
+  @Nonnull
   static UsersClient getInstance() {
-    return new UsersDbClient();
+    return "api".equals(System.getProperty("client.impl"))
+        ? new UsersApiClient()
+        : new UsersDbClient();
   }
 
   @Nonnull

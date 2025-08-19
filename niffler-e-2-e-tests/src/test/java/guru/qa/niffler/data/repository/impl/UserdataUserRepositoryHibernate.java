@@ -17,9 +17,7 @@ import static guru.qa.niffler.data.jpa.EntityManagers.em;
 @ParametersAreNonnullByDefault
 public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
 
-  private static final Config CFG = Config.getInstance();
-
-  private final EntityManager entityManager = em(CFG.userdataJdbcUrl());
+  private final EntityManager entityManager = em(Config.getInstance().userdataJdbcUrl());
 
   @Nonnull
   @Override
@@ -32,7 +30,8 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
   @Nonnull
   @Override
   public UserEntity update(UserEntity user) {
-    return null;
+    entityManager.joinTransaction();
+    return entityManager.merge(user);
   }
 
   @Nonnull
