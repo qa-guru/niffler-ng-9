@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
@@ -10,16 +11,11 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
-import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
-
-import static com.codeborne.selenide.Selenide.$;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @WebTest
 public class SpendingTest {
@@ -116,6 +112,7 @@ public class SpendingTest {
         .checkTableSize(0);
   }
 
+
   @User(
       spendings = @Spending(
           category = "Обучение",
@@ -130,7 +127,8 @@ public class SpendingTest {
         .submit(new MainPage())
         .getStatComponent()
         .checkStatisticBubblesContains("Обучение 79990 ₽")
-        .checkStatisticImage(expected);
+        .checkStatisticImage(expected)
+        .checkBubbles(Color.yellow);
   }
 
   @User(
@@ -164,7 +162,7 @@ public class SpendingTest {
         .submit(new MainPage())
         .getStatComponent()
         .checkStatisticBubblesContains("Поездки 9500 ₽", "Archived 3100 ₽")
-        .checkStatisticImage(expected);
+        .checkStatisticImage(expected)
+        .checkBubbles(Color.yellow, Color.green);
   }
 }
-
