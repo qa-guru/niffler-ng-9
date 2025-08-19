@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -126,13 +127,44 @@ public class SpendingTest {
   void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(LoginPage.URL, LoginPage.class)
         .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage());
+        .submit(new MainPage())
+        .getStatComponent()
+        .checkStatisticBubblesContains("Обучение 79990 ₽")
+        .checkStatisticImage(expected);
+  }
 
-    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-    assertFalse(new ScreenDiffResult(
-        expected,
-        actual
-    ));
+  @User(
+      categories = {
+          @Category(name = "Поездки"),
+          @Category(name = "Ремонт", archived = true),
+          @Category(name = "Страховка", archived = true)
+      },
+      spendings = {
+          @Spending(
+              category = "Поездки",
+              description = "В Москву",
+              amount = 9500
+          ),
+          @Spending(
+              category = "Ремонт",
+              description = "Цемент",
+              amount = 100
+          ),
+          @Spending(
+              category = "Страховка",
+              description = "ОСАГО",
+              amount = 3000
+          )
+      }
+  )
+  @ScreenShotTest(value = "img/expected-stat-archived.png")
+  void statComponentShouldDisplayArchivedCategories(UserJson user, BufferedImage expected) throws IOException {
+    Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getStatComponent()
+        .checkStatisticBubblesContains("Поездки 9500 ₽", "Archived 3100 ₽")
+        .checkStatisticImage(expected);
   }
 }
 

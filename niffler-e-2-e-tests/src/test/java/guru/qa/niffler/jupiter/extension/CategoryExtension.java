@@ -15,12 +15,14 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
 import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
+@ParametersAreNonnullByDefault
 public class CategoryExtension implements
     BeforeEachCallback,
     AfterTestExecutionCallback,

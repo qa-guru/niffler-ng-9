@@ -12,10 +12,12 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
 
+@ParametersAreNonnullByDefault
 public class UserExtension implements
     BeforeEachCallback,
     ParameterResolver {
@@ -31,7 +33,7 @@ public class UserExtension implements
         .ifPresent(userAnno -> {
           if ("".equals(userAnno.username())) {
             final String username = RandomDataUtils.randomUsername();
-            UserJson created = usersClient.createUser(username, DEFAULT_PASSWORD);
+            final UserJson created = usersClient.createUser(username, DEFAULT_PASSWORD);
             final List<UserJson> incomes = usersClient.addIncomeInvitation(created, userAnno.incomeInvitations());
             final List<UserJson> outcomes = usersClient.addOutcomeInvitation(created, userAnno.outcomeInvitations());
             final List<UserJson> friends = usersClient.addFriend(created, userAnno.friends());
