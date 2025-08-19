@@ -1,10 +1,10 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.SpendClient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -28,7 +28,7 @@ public class CategoryExtension implements
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-  private final SpendApiClient spendApiClient = new SpendApiClient();
+  private final SpendClient spendClient = SpendClient.getInstance();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
@@ -36,17 +36,20 @@ public class CategoryExtension implements
         .ifPresent(userAnno -> {
           if (ArrayUtils.isNotEmpty(userAnno.categories())) {
             final @Nullable UserJson createdUser = UserExtension.createdUser();
+            final String username = createdUser != null
+                ? createdUser.username()
+                : userAnno.username();
 
             final List<CategoryJson> result = new ArrayList<>();
             for (Category categoryAnno : userAnno.categories()) {
               CategoryJson category = new CategoryJson(
                   null,
-                  randomCategoryName(),
-                  userAnno.username(),
+                  "".equals(categoryAnno.name()) ? randomCategoryName() : categoryAnno.name(),
+                  username,
                   categoryAnno.archived()
               );
 
-              CategoryJson created = spendApiClient.createCategory(category);
+              CategoryJson created = spendClient.createCategory(category);
               if (categoryAnno.archived()) {
                 CategoryJson archivedCategory = new CategoryJson(
                     created.id(),
@@ -54,7 +57,7 @@ public class CategoryExtension implements
                     created.username(),
                     true
                 );
-                created = spendApiClient.updateCategory(archivedCategory);
+                created = spendClient.updateCategory(archivedCategory);
               }
               result.add(created);
             }
@@ -83,7 +86,7 @@ public class CategoryExtension implements
               category.username(),
               true
           );
-          spendApiClient.updateCategory(category);
+          spendClient.updateCategory(category);
         }
       }
     }
