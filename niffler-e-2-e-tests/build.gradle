@@ -77,11 +77,7 @@ dependencies {
     }
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
     // DB
-    testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
-    testImplementation "p6spy:p6spy:${p6spyVersion}"
-    testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
-    testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
     // Allure
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
