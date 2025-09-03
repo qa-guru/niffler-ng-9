@@ -1,11 +1,9 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.auth.FriendshipStatus;
 import guru.qa.niffler.model.auth.UserJson;
 
 import java.sql.*;
@@ -53,7 +51,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
 
     @Override
-    public UserJson createUser(UserEntity user) {
+    public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -78,7 +76,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
                 }
             }
             user.setId(generatedKey);
-            return UserJson.fromEntity(user, null);
+            return UserEntity.fromJson(UserJson.fromEntity(user, null));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
