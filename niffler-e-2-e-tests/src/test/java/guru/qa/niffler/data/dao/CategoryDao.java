@@ -19,7 +19,5 @@ public interface CategoryDao {
 
     Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName);
 
-
-
-
+    List<CategoryEntity> findAll();
 }
