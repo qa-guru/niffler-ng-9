@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -187,11 +188,11 @@ public class JdbcTest {
     }
 
     @Test
-    void createUserViaRepository() {
+    void createUserViaJdbcRepository() {
         UserDbClient usersDbClient = new UserDbClient();
         UserJson user = new UserJson(
                 null,
-                "repoUser",
+                "repoUser_1",
                 null,
                 null,
                 null,
@@ -203,6 +204,89 @@ public class JdbcTest {
         UserJson createdUser = usersDbClient.createUser(user);
         System.out.println("Created User: " + createdUser);
         assertThat(createdUser.id(), notNullValue());
+    }
+
+    @Test
+    void createUserViaSpringRepository() {
+        UserDbClient usersDbClient = new UserDbClient();
+        UserJson user = new UserJson(
+                null,
+                "Spring Repo User 1",
+                null,
+                null,
+                null,
+                CurrencyValues.RUB,
+                null,
+                null,
+                null
+        );
+        UserJson createdUser = usersDbClient.createUserViaRepositorySpring(user);
+        System.out.println("Created User: " + createdUser);
+        assertThat(createdUser.id(), notNullValue());
+    }
+
+    @Test
+    void findUserById() {
+        UserDbClient usersDbClient = new UserDbClient();
+        UserJson user = usersDbClient.findUserById(UUID
+                .fromString("d149c9c5-f8a0-42fa-823e-c0d9f9f94797"));
+        System.out.println(user);
+    }
+
+    @Test
+    void addFriendshipViaRepositoryJdbcTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        UserJson requesterUser = new UserJson(
+                UUID.fromString("6998e039-d10d-4dbd-a6a5-df64b220e2cb"),
+                "dove",
+                null,
+                null,
+                null,
+                CurrencyValues.RUB,
+                null,
+                null,
+                null
+        );
+        UserJson addresseeUser = new UserJson(
+                UUID.fromString("30fbb230-8076-4c9f-b210-13750ea0c2db"),
+                "goose",
+                null,
+                null,
+                null,
+                CurrencyValues.RUB,
+                null,
+                null,
+                null
+        );
+        userDbClient.createFriendshipRepositoryJdbc(requesterUser, addresseeUser);
+    }
+
+    @Test
+    void addFriendshipViaRepositorySpringTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        UserJson requesterUser = new UserJson(
+                UUID.fromString("b815b120-6eaf-11f0-bd0f-0242ac110002"),
+                "Spring Repo User",
+                null,
+                null,
+                null,
+                CurrencyValues.RUB,
+                null,
+                null,
+                null
+        );
+        UserJson addresseeUser = new UserJson(
+                UUID.fromString("8f6d8e58-6f01-11f0-b0eb-0242ac110002"),
+                "repoUser_1",
+                null,
+                null,
+                null,
+                CurrencyValues.RUB,
+                null,
+                null,
+                null
+        );
+        userDbClient.createFriendshipRepositorySpring(requesterUser, addresseeUser);
     }
 
     @Test
