@@ -81,6 +81,16 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return Optional.empty();
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        return null;
+    }
+
+    @Override
     public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
                 "INSERT INTO friendship (requester_id, addressee_id, status, created_date) " +
@@ -128,6 +138,11 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    @Override
+    public void remove(UserEntity user) {
 
     }
 }

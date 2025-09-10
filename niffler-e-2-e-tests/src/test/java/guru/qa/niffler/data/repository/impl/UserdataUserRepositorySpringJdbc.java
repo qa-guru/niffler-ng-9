@@ -58,6 +58,16 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     }
 
     @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return Optional.empty();
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        return null;
+    }
+
+    @Override
     public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         jdbcTemplate.update(con -> {
@@ -101,5 +111,10 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
             ps.setDate(4, date);
             return ps;
         });
+    }
+
+    @Override
+    public void remove(UserEntity user) {
+
     }
 }
