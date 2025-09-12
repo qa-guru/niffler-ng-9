@@ -13,6 +13,9 @@ public class RandomDataUtils {
         return faker.name().lastName();
     }
 
+    public static String randomCategoryName() {
+        return faker.food().fruit();
+    }
     public static String randomSentence (int wordsCount) {
         return faker.lorem().sentence(wordsCount);
     }

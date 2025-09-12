@@ -1,9 +1,12 @@
 package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.PeoplePage;
@@ -11,46 +14,54 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.List;
-
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 
 public class FriendsTest {
+    private static final Config CFG = Config.getInstance();
+
     FriendsPage friendsPage = new FriendsPage();
     PeoplePage peoplePage = new PeoplePage();
     LoginPage loginPage = new LoginPage();
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void friendShouldBePresentInFriendsTable(@UsersQueueExtension.UserType(WITH_FRIEND) StaticUser user) {
-        loginPage.openPage()
-                .fillLoginPage(user.username(), user.password())
-                .submit();
-        friendsPage.openPage()
-                .checkFriendsContainUsers(List.of(user.friend()));
+    @User(
+            friends = 1
+    )
+    void friendShouldBePresentInFriendsTable(UserJson user) {
+        final UserJson friend = user.testData().friends().getFirst();
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .successLogin(user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .friendsPage()
+                .checkExistingFriends(friend.username());
+    }
+
+
+    @Test
+    @User()
+    void friendsTableShouldBeEmptyForNewUser(UserJson user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .successLogin(user.username(), "12345")
+                .checkThatPageLoaded()
+                .friendsPage()
+                .checkNoExistingFriends();
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void friendsTableShouldBeEmptyForNewUser(@UsersQueueExtension.UserType(EMPTY) StaticUser user){
-        loginPage.openPage()
-                .fillLoginPage(user.username(), user.password())
-                .submit();
-        friendsPage.openPage()
-                .checkFriendsEmpty();
-        peoplePage.openPage()
-                .checkNoOutcomeInvites();
+    @User(
+            incomeInvitations = 1
+    )
+    void incomeInvitationBePresentInFriendsTable(UserJson user) {
+        final UserJson income = user.testData().incomeInvitations().getFirst();
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .successLogin(user.username(), user.testData().password())
+                .checkThatPageLoaded()
+                .friendsPage()
+                .checkExistingInvitations(income.username());
     }
 
-    @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
-        loginPage.openPage()
-                .fillLoginPage(user.username(), user.password())
-                .submit();
-        friendsPage.openPage()
-                .checkRequestsContainUsers(List.of(user.income()));
-    }
 
     @Test
     @ExtendWith(UsersQueueExtension.class)

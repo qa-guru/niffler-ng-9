@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UserdataUserDao;
+import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
@@ -15,8 +16,9 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
-public class UserdataUserUserDaoJdbc implements UserdataUserDao {
+public class UserdataUserDaoJdbc implements UserdataUserDao {
     private static final Config CFG = Config.getInstance();
+    private static final String URL = CFG.userdataJdbcUrl();
 
     @Override
     public UserEntity create(UserEntity user) {
@@ -48,6 +50,50 @@ public class UserdataUserUserDaoJdbc implements UserdataUserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        try (PreparedStatement usersPs = holder(URL).connection().prepareStatement(
+                """
+                      UPDATE "user"
+                        SET currency    = ?,
+                            firstname   = ?,
+                            surname     = ?,
+                            photo       = ?,
+                            photo_small = ?
+                        WHERE id = ?
+                    """);
+
+             PreparedStatement friendsPs = holder(URL).connection().prepareStatement(
+                     """
+                         INSERT INTO friendship (requester_id, addressee_id, status)
+                         VALUES (?, ?, ?)
+                         ON CONFLICT (requester_id, addressee_id)
+                             DO UPDATE SET status = ?
+                         """)
+        ) {
+            usersPs.setString(1, user.getCurrency().name());
+            usersPs.setString(2, user.getFirstname());
+            usersPs.setString(3, user.getSurname());
+            usersPs.setBytes(4, user.getPhoto());
+            usersPs.setBytes(5, user.getPhotoSmall());
+            usersPs.setObject(6, user.getId());
+            usersPs.executeUpdate();
+
+            for (FriendshipEntity fe : user.getFriendshipRequests()) {
+                friendsPs.setObject(1, user.getId());
+                friendsPs.setObject(2, fe.getAddressee().getId());
+                friendsPs.setString(3, fe.getStatus().name());
+                friendsPs.setString(4, fe.getStatus().name());
+                friendsPs.addBatch();
+                friendsPs.clearParameters();
+            }
+            friendsPs.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return user;
     }
 
     @Override
@@ -104,20 +150,6 @@ public class UserdataUserUserDaoJdbc implements UserdataUserDao {
                     }
                 }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void delete(UserEntity user) {
-        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                    "DELETE FROM user WHERE id = ?"
-            )) {
-                ps.setObject(1, user.getId());
-
-                int deletedRows = ps.executeUpdate();
-                System.out.printf("Deleted %d rows%n", deletedRows);
-         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
