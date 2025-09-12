@@ -82,12 +82,65 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        return Optional.empty();
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM user WHERE username = ?"
+        )) {
+            ps.setString(1, username);
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                if (rs.next()) {
+                    UserEntity ue = new UserEntity();
+                    ue.setId(rs.getObject("id", UUID.class));
+                    ue.setUsername(rs.getString("username"));
+                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    ue.setFirstname(rs.getString("firstname"));
+                    ue.setSurname(rs.getString("surname"));
+                    ue.setFullname(rs.getString("fullname"));
+                    ue.setPhoto(rs.getBytes("photo"));
+                    ue.setPhotoSmall(rs.getBytes("photoSmall"));
+
+                    return Optional.of(ue);
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public UserEntity update(UserEntity user) {
-        return null;
+        try (PreparedStatement ps = holder(URL).connection().prepareStatement(
+                "UPDATE \"user\" SET " +
+                        "username = ?, " +
+                        "currency = ?, " +
+                        "firstname = ?, " +
+                        "surname = ?, " +
+                        "fullname = ?, " +
+                        "photo = ?, " +
+                        "photoSmall = ? " +
+                        "WHERE id = ?"
+        )) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getCurrency().name());
+            ps.setString(3, user.getFirstname());
+            ps.setString(4, user.getSurname());
+            ps.setString(5, user.getFullname());
+            ps.setBytes(6, user.getPhoto());
+            ps.setBytes(7, user.getPhotoSmall());
+            ps.setObject(8, user.getId()); // ID в условии WHERE
+
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new SQLException("Пользователь с id " + user.getId() + " не найден");
+            }
+
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -143,6 +196,15 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public void remove(UserEntity user) {
+        try (PreparedStatement ps = holder(URL).connection().prepareStatement(
+                "DELETE FROM \"user\" where id = ?"
+        )) {
+            ps.setObject(1, user.getId());
 
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

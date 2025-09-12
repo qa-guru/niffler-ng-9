@@ -3,7 +3,6 @@ package guru.qa.niffler.data.repository.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -83,12 +82,12 @@ public class SpendRepositoryHibernate implements SpendRepository {
     @Override
     public void remove(SpendEntity spend) {
         entityManager.joinTransaction();
-        entityManager.persist(spend);
+        entityManager.remove(spend);
     }
 
     @Override
     public void removeCategory(CategoryEntity category) {
         entityManager.joinTransaction();
-        entityManager.persist(category);
+        entityManager.remove(category);
     }
 }
