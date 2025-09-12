@@ -28,6 +28,12 @@ public class LoginPage {
     return this;
   }
 
+  public MainPage successLogin(String username, String password) {
+    fillLoginPage(username, password);
+    submit();
+    return new MainPage();
+  }
+
   public MainPage submit() {
     submitButton.click();
     return new MainPage();

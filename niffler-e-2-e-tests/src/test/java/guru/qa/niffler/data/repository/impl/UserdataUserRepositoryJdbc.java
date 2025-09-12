@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.UserdataUserDao;
+import guru.qa.niffler.data.dao.impl.UserdataUserDaoJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -19,6 +21,7 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.userdataJdbcUrl();
+    private final UserdataUserDao udUserDao = new UserdataUserDaoJdbc();
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
@@ -144,29 +147,10 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
-    public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
-        try (PreparedStatement ps = holder(URL).connection().prepareStatement(
-                "INSERT INTO friendship (requester_id, addressee_id, status, created_date) " +
-                        "VALUES ( ?, ?, ?, ?)"
-        )) {
-            ps.setObject(1, requester.getId());
-            ps.setObject(2, addressee.getId());
-            ps.setString(3, FriendshipStatus.PENDING.name());
-            ps.setDate(4, new java.sql.Date(new Date().getTime()));
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+    public void addFriendshipRequest(UserEntity requester, UserEntity addressee) {
+        requester.addFriends(FriendshipStatus.PENDING, addressee);
+        udUserDao.update(requester);
     }
-
-    @Override
-    public void addOutcomeInvitation(UserEntity requester, UserEntity addressee) {
-        addIncomeInvitation(addressee, requester);
-    }
-
     @Override
     public void addFriend(UserEntity requester, UserEntity addressee) {
         long now = new Date().getTime();
