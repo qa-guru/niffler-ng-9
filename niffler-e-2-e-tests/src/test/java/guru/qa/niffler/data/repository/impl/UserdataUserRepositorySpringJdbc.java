@@ -22,7 +22,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     private static final String URL = CFG.userdataJdbcUrl();
     @Override
     public UserEntity create(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -47,7 +47,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
         return Optional.of(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -58,8 +58,55 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     }
 
     @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+        return Optional.of(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ?",
+                        UserdataUserEntityRowMapper.instance,
+                        username
+                )
+        );
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+
+        int rows = jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE \"user\" SET " +
+                            "username = ?, " +
+                            "currency = ?, " +
+                            "firstname = ?, " +
+                            "surname = ?, " +
+                            "photo = ?, " +
+                            "photo_small = ?, " +
+                            "full_name = ? " +
+                            "WHERE id = ?"
+            );
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getCurrency().name());
+            ps.setString(3, user.getFirstname());
+            ps.setString(4, user.getSurname());
+            ps.setBytes(5, user.getPhoto());
+            ps.setBytes(6, user.getPhotoSmall());
+            ps.setString(7, user.getFullname());
+            ps.setObject(8, user.getId());
+            return ps;
+        });
+
+        if (rows == 0) {
+            throw new IllegalStateException("Пользователь с id " + user.getId() + " не найден для обновления");
+        }
+
+        return user;
+
+    }
+
+    @Override
     public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO friendship (requester_id, addressee_id, status, created_date) " +
@@ -84,7 +131,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         java.sql.Date date = new java.sql.Date(new Date().getTime());
         String sql = "INSERT INTO friendship (requester_id, addressee_id, status, created_date) " +
                 "VALUES ( ?, ?, ?, ?)";
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setObject(1, requester.getId());
@@ -101,5 +148,15 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
             ps.setDate(4, date);
             return ps;
         });
+    }
+
+    @Override
+    public void remove(UserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
+
+        jdbcTemplate.update(
+                "DELETE FROM \"user\" WHERE id = ?",
+                ps -> ps.setObject(1, user.getId())
+        );
     }
 }
