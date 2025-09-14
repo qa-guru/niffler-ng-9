@@ -52,7 +52,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                                                 spendAnno.description(),
                                                 username
                                         );
-                                        result.add(spendApiClient.addSpend(spendJson));
+                                        result.add(spendApiClient.createSpend(spendJson));
                                     }
                                 }
 

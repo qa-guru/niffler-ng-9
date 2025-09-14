@@ -2,8 +2,10 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import java.util.Arrays;
+
 import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 public class FriendsPage {
@@ -11,9 +13,14 @@ public class FriendsPage {
     private final SelenideElement allTab = $("a[href='/people/all']");
     private final SelenideElement requestsTable = $("#requests");
     private final SelenideElement friendsTable = $("#friends");
+    private final SelenideElement nextButton = $("#page-next");
+    private final SearchComponent searchComponent = new SearchComponent();
 
     public FriendsPage checkExistingFriends(String... expectedUsernames) {
-        friendsTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+        Arrays.stream(expectedUsernames).forEach(el -> {
+            searchComponent.searchUser(el);
+            friendsTable.$$("tr").find(text(el));
+        });
         return this;
     }
 
@@ -23,7 +30,10 @@ public class FriendsPage {
     }
 
     public FriendsPage checkExistingInvitations(String... expectedUsernames) {
-        requestsTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+        Arrays.stream(expectedUsernames).forEach(el -> {
+            searchComponent.searchUser(el);
+            requestsTable.$$("tr").find(text(el));
+        });
         return this;
     }
 }

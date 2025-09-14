@@ -22,7 +22,8 @@ public class ProfileTest {
             )}
     )
     @Test
-    void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category){
+    void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson[] categories){
+        CategoryJson category = categories[0];
         loginPage.openPage()
                 .fillLoginPage(category.username(), CFG.defaultPassword())
                 .submit();

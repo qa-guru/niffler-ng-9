@@ -3,8 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
@@ -13,6 +12,7 @@ public class MainPage {
   private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
   private final SelenideElement statComponent = $("#stat");
   private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement nextButton = $("#page-next");
 
   public FriendsPage friendsPage() {
     header.$("button").click();
@@ -26,13 +26,22 @@ public class MainPage {
     return new PeoplePage();
   }
 
+  private SelenideElement findInTable(ElementsCollection element, String text) {
+    SelenideElement result = null;
+    result = element.find(text(text));
+    while (!result.exists() && nextButton.is(clickable)) {
+      nextButton.scrollIntoView(true).click();
+    }
+    return result;
+  }
+
   public EditSpendingPage editSpending(String spendingDescription) {
-    tableRows.find(text(spendingDescription)).$$("td").get(5).click();
+    findInTable(tableRows, spendingDescription).$$("td").get(5).click();
     return new EditSpendingPage();
   }
 
   public void checkThatTableContainsSpending(String spendingDescription) {
-    tableRows.find(text(spendingDescription)).should(visible);
+    findInTable(tableRows, spendingDescription).should(visible);
   }
 
   public MainPage checkThatPageLoaded() {

@@ -12,6 +12,7 @@ import static com.codeborne.selenide.Selenide.$x;
 public class PeoplePage {
     private final ElementsCollection allPeopleList = $$("#all tr");
     private final SelenideElement allTable = $x("//a[@href='/people/all']");
+    private final SearchComponent searchComponent = new SearchComponent();
 
     public PeoplePage openPage() {
         Selenide.open(Config.getInstance().frontUrl() + "people/all");
@@ -20,6 +21,7 @@ public class PeoplePage {
     }
 
     public PeoplePage checkUserInWaitingStatus(String outcomeInviteUser) {
+        searchComponent.searchUser(outcomeInviteUser);
         SelenideElement outcomeLine = allPeopleList.find(text(outcomeInviteUser));
         outcomeLine.shouldHave(text("Waiting..."));
         return this;

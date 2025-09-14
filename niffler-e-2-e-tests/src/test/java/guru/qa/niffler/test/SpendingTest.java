@@ -18,19 +18,18 @@ public class SpendingTest {
           username = "duck",
           spendings = @Spending(
             category = "Обучение",
-            description = "Обучение Advanced 2.0",
-            amount = 79990
+            description = "java advanced",
+            amount = 1000
             )
   )
   @Test
-  void spendingShouldBeDisplayedInTheList(SpendJson spendJson) {
-    final String newDescription = ":)";
-
+  void spendingShouldBeDisplayedInTheList(SpendJson[] spendJson) {
+    final String newDescription = "new name";
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .fillLoginPage("duck", "12345")
         .submit()
         .checkThatPageLoaded()
-        .editSpending(spendJson.description())
+        .editSpending(spendJson[0].description())
         .setNewSpendingDescription(newDescription)
         .save()
         .checkThatTableContainsSpending(newDescription);

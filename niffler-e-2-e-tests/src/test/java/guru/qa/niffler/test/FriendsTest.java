@@ -3,19 +3,14 @@ package guru.qa.niffler.test;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.PeoplePage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
-
+@WebTest
 public class FriendsTest {
     private static final Config CFG = Config.getInstance();
 
@@ -64,17 +59,16 @@ public class FriendsTest {
 
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
-    void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
+    @User(
+            outcomeInvitations = 1
+    )
+    void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
+        final UserJson outcome = user.testData().outcomeInvitations().getFirst();
         loginPage.openPage()
-                .fillLoginPage(user.username(), user.password())
+                .fillLoginPage(user.username(), "12345")
                 .submit();
         peoplePage.openPage()
-                .checkUserInWaitingStatus(user.outcome());
+                .checkUserInWaitingStatus(outcome.username());
     }
 
-    @AfterAll
-    static void suiteTearDown() {
-        Selenide.closeWebDriver();
-    }
 }
