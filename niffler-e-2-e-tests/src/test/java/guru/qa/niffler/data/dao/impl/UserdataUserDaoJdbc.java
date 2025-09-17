@@ -1,14 +1,14 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.auth.FriendshipStatus;
 import guru.qa.niffler.model.auth.UserJson;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,7 +53,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
     }
 
     @Override
-    public UserJson createUser(UserEntity user) {
+    public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -78,7 +78,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
                 }
             }
             user.setId(generatedKey);
-            return UserJson.fromEntity(user, null);
+            return UserEntity.fromJson(UserJson.fromEntity(user, null));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -134,4 +134,28 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public List<UserEntity> findAll() {
+        List<UserEntity> users = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM user")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserEntity user = new UserEntity();
+                    user.setId(rs.getObject("id", UUID.class));
+                    user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    user.setFirstname(rs.getString("firstname"));
+                    user.setFullname(rs.getString("full_name"));
+                    user.setPhoto(rs.getBytes("photo"));
+                    user.setPhotoSmall(rs.getBytes("photo_small"));
+                    user.setSurname(rs.getString("surname"));
+                    user.setUsername(rs.getString("username"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all users", e);
+        }
+        return users;
+    }
+
 }

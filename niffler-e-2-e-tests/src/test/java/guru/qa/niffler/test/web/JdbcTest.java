@@ -6,6 +6,7 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.auth.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,25 @@ import java.util.Optional;
 import java.util.UUID;
 @Disabled
 public class JdbcTest {
+
+    @Test
+    void springJdbcTest() {
+        UserDbClient usersDbClient = new UserDbClient();
+        UserJson user = usersDbClient.createUserSpringJdbc(
+                new UserJson(
+                        null,
+                        "valentin-9090",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        "null",
+                        "null",
+                        null
+                )
+        );
+        System.out.println(user);
+    }
 
     @Test
     void txTest() {
