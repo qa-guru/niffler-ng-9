@@ -1,40 +1,36 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Color;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Date;
 
 @WebTest
 public class SpendingTest {
 
+  @Test
   @User(
       spendings = @Spending(
           category = "Обучение",
           description = "Обучение Advanced 2.0",
-          amount = 89990
+          amount = 79990
       )
   )
-  @Test
-  void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
+  @ApiLogin
+  void categoryDescriptionShouldBeChangedFromTable() {
     final String newDescription = "Обучение Niffler Next Generation";
 
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getSpendingTable()
+    new MainPage().getSpendingTable()
         .editSpending("Обучение Advanced 2.0")
         .setNewSpendingDescription(newDescription)
         .saveSpending();
@@ -43,17 +39,16 @@ public class SpendingTest {
         .checkTableContains(newDescription);
   }
 
-  @User
   @Test
-  void shouldAddNewSpending(UserJson user) {
-    String category = "Friends";
-    int amount = 100;
-    Date currentDate = new Date();
-    String description = RandomDataUtils.randomSentence(3);
+  @User
+  @ApiLogin
+  void shouldAddNewSpending() {
+    final String category = "Friends";
+    final int amount = 100;
+    final Date currentDate = new Date();
+    final String description = RandomDataUtils.randomSentence(3);
 
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    new MainPage()
         .getHeader()
         .addSpendingPage()
         .setNewSpendingCategory(category)
@@ -67,13 +62,11 @@ public class SpendingTest {
         .checkTableContains(description);
   }
 
-  @User
   @Test
-  void shouldNotAddSpendingWithEmptyCategory(UserJson user) {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getHeader()
+  @User
+  @ApiLogin
+  void shouldNotAddSpendingWithEmptyCategory() {
+    new MainPage().getHeader()
         .addSpendingPage()
         .setNewSpendingAmount(100)
         .setNewSpendingDate(new Date())
@@ -81,13 +74,11 @@ public class SpendingTest {
         .checkFormErrorMessage("Please choose category");
   }
 
-  @User
   @Test
-  void shouldNotAddSpendingWithEmptyAmount(UserJson user) {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getHeader()
+  @User
+  @ApiLogin
+  void shouldNotAddSpendingWithEmptyAmount() {
+    new MainPage().getHeader()
         .addSpendingPage()
         .setNewSpendingCategory("Friends")
         .setNewSpendingDate(new Date())
@@ -95,19 +86,17 @@ public class SpendingTest {
         .checkFormErrorMessage("Amount has to be not less then 0.01");
   }
 
+  @Test
   @User(
       spendings = @Spending(
           category = "Обучение",
           description = "Обучение Advanced 2.0",
-          amount = 89990
+          amount = 79990
       )
   )
-  @Test
-  void deleteSpendingTest(UserJson user) {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getSpendingTable()
+  @ApiLogin
+  void deleteSpendingTest() {
+    new MainPage().getSpendingTable()
         .deleteSpending("Обучение Advanced 2.0")
         .checkTableSize(0);
   }
@@ -120,15 +109,12 @@ public class SpendingTest {
           amount = 79990
       )
   )
+  @ApiLogin
   @ScreenShotTest("img/expected-stat.png")
-  void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getStatComponent()
-        .checkStatisticBubblesContains("Обучение 79990 ₽")
-        .checkStatisticImage(expected)
-        .checkBubbles(Color.yellow);
+  void checkStatComponentTest(BufferedImage expected) {
+    new MainPage().getStatComponent()
+        .checkBubbles(new Bubble(Color.yellow, "Обучение 79990 ₽"))
+        .checkStatisticImage(expected);
   }
 
   @User(
@@ -155,14 +141,14 @@ public class SpendingTest {
           )
       }
   )
-  @ScreenShotTest(value = "img/expected-stat-archived.png")
-  void statComponentShouldDisplayArchivedCategories(UserJson user, BufferedImage expected) throws IOException {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getStatComponent()
-        .checkStatisticBubblesContains("Поездки 9500 ₽", "Archived 3100 ₽")
-        .checkStatisticImage(expected)
-        .checkBubbles(Color.yellow, Color.green);
+  @ApiLogin
+  @ScreenShotTest("img/expected-stat-archived.png")
+  void statComponentShouldDisplayArchivedCategories(BufferedImage expected) {
+    new MainPage().getStatComponent()
+        .checkBubbles(
+            new Bubble(Color.yellow, "Поездки 9500 ₽"),
+            new Bubble(Color.green, "Archived 3100 ₽")
+        )
+        .checkStatisticImage(expected);
   }
 }

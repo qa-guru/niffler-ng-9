@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(u = f.addressee and f.requester.username = :username) " +
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
-          "order by f.status asc"
+          "order by f.status asc, u.username asc"
   )
   List<UserWithStatus> findByUsernameNot(@Nonnull String username);
 
@@ -36,7 +36,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status asc"
+          "order by f.status asc, u.username asc"
   )
   List<UserWithStatus> findByUsernameNot(@Nonnull @Param("username") String username,
                                          @Nonnull @Param("searchQuery") String searchQuery);
@@ -48,7 +48,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(u = f.addressee and f.requester.username = :username) " +
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
-          "order by f.status asc"
+          "order by f.status asc, u.username asc"
   )
   Page<UserWithStatus> findByUsernameNot(@Nonnull String username,
                                          @Nonnull Pageable pageable);
@@ -61,7 +61,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status asc"
+          "order by f.status asc, u.username asc"
   )
   Page<UserWithStatus> findByUsernameNot(@Nonnull @Param("username") String username,
                                          @Nonnull @Param("searchQuery") String searchQuery,
@@ -73,7 +73,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "from UserEntity u join FriendshipEntity f on u = f.requester where " +
           "(f.status is not null) " +
           "and f.addressee = :addressee " +
-          "order by f.status desc"
+          "order by f.status desc, u.username asc"
   )
   List<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee);
 
@@ -84,7 +84,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(f.status is not null) " +
           "and f.addressee = :addressee " +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status desc"
+          "order by f.status desc, u.username asc"
   )
   List<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
                                    @Param("searchQuery") String searchQuery);
@@ -95,7 +95,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "from UserEntity u join FriendshipEntity f on u = f.requester where " +
           "(f.status is not null) " +
           "and f.addressee = :addressee " +
-          "order by f.status desc"
+          "order by f.status desc, u.username asc"
   )
   Page<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
                                    @Nonnull Pageable pageable);
@@ -107,7 +107,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(f.status is not null) " +
           "and f.addressee = :addressee " +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status desc"
+          "order by f.status desc, u.username asc"
   )
   Page<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
                                    @Param("searchQuery") String searchQuery,

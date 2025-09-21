@@ -11,6 +11,14 @@ public interface Config {
         : LocalConfig.INSTANCE;
   }
 
+  default String testDatabaseUsername() {
+    return "postgres";
+  }
+
+  default String testDatabasePassword() {
+    return "secret";
+  }
+
   @Nonnull
   String frontUrl();
 
