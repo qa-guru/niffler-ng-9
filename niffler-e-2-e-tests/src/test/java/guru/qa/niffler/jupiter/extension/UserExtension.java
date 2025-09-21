@@ -34,12 +34,15 @@ public class UserExtension implements
           if ("".equals(userAnno.username())) {
             final String username = RandomDataUtils.randomUsername();
             final UserJson created = usersClient.createUser(username, DEFAULT_PASSWORD);
+
+            final List<UserJson> others = usersClient.addOtherPeoples(userAnno.others());
             final List<UserJson> incomes = usersClient.addIncomeInvitation(created, userAnno.incomeInvitations());
             final List<UserJson> outcomes = usersClient.addOutcomeInvitation(created, userAnno.outcomeInvitations());
             final List<UserJson> friends = usersClient.addFriend(created, userAnno.friends());
 
             TestData testData = new TestData(
                 DEFAULT_PASSWORD,
+                others,
                 friends,
                 incomes,
                 outcomes
