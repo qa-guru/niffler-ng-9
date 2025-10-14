@@ -2,6 +2,7 @@ package guru.qa.niffler.config;
 
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestUserDataClient;
+import guru.qa.niffler.service.grpc.GrpcUserDataClient;
 import guru.qa.niffler.service.soap.SoapUserDataClient;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -60,11 +61,13 @@ public class NifflerGatewayServiceConfig {
       client.setMarshaller(marshaller);
       client.setUnmarshaller(marshaller);
       return client;
-    } else {
+    } else if ("rest".equals(userdataClient)) {
       return new RestUserDataClient(
           restTemplate,
           nifflerUserdataBaseUri
       );
+    } else {
+      return new GrpcUserDataClient();
     }
   }
 
