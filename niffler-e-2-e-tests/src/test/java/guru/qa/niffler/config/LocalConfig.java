@@ -63,4 +63,10 @@ enum LocalConfig implements Config {
   public String currencyGrpcAddress() {
     return "127.0.0.1";
   }
+
+  @Nonnull
+  @Override
+  public String userdataGrpcAddress() {
+    return "127.0.0.1";
+  }
 }

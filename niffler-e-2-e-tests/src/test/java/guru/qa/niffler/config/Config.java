@@ -49,8 +49,15 @@ public interface Config {
   @Nonnull
   String currencyGrpcAddress();
 
+  @Nonnull
+  String userdataGrpcAddress();
+
   default int currencyGrpcPort() {
     return 8092;
+  }
+
+  default int userdataGrpcPort() {
+    return 8088;
   }
 
   @Nonnull

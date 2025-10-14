@@ -17,6 +17,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
 @ParametersAreNonnullByDefault
 public class SoapUserDataClient extends WebServiceGatewaySupport implements UserDataClient {
 

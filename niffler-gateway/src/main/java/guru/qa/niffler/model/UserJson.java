@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
+import static guru.qa.niffler.grpc.FriendshipStatus.FRIENDSHIP_STATUS_UNSPECIFIED;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserJson(
     @JsonProperty("id")
@@ -71,6 +73,50 @@ public record UserJson(
         jaxbUser.getPhotoSmall(),
         (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != guru.qa.jaxb.userdata.FriendshipStatus.VOID)
             ? FriendshipStatus.valueOf(jaxbUser.getFriendshipStatus().name())
+            : null
+    );
+  }
+
+  public @Nonnull guru.qa.niffler.grpc.User toGrpcUser() {
+    guru.qa.niffler.grpc.User.Builder grpcUserBuilder = guru.qa.niffler.grpc.User.newBuilder();
+    grpcUserBuilder.setId(id != null ? id.toString() : null);
+    grpcUserBuilder.setUsername(username);
+    if (firstname != null) {
+      grpcUserBuilder.setFirstname(firstname);
+    }
+    if (surname != null) {
+      grpcUserBuilder.setSurname(surname);
+    }
+    if (fullname != null) {
+      grpcUserBuilder.setFullname(fullname);
+    }
+    if (currency != null) {
+      grpcUserBuilder.setCurrency(guru.qa.niffler.grpc.CurrencyValues.valueOf(currency.name()));
+    }
+    if (photo != null) {
+      grpcUserBuilder.setPhoto(photo);
+    }
+    if (photoSmall != null) {
+      grpcUserBuilder.setPhotoSmall(photoSmall);
+    }
+    grpcUserBuilder.setFriendshipStatus(friendshipStatus() == null ?
+        FRIENDSHIP_STATUS_UNSPECIFIED :
+        guru.qa.niffler.grpc.FriendshipStatus.valueOf(friendshipStatus().name()));
+    return grpcUserBuilder.build();
+  }
+
+  public static @Nonnull UserJson fromGrpc(@Nonnull guru.qa.niffler.grpc.User grpcUser) {
+    return new UserJson(
+        UUID.fromString(grpcUser.getId()),
+        grpcUser.getUsername(),
+        grpcUser.getFirstname(),
+        grpcUser.getSurname(),
+        grpcUser.getFullname(),
+        CurrencyValues.valueOf(grpcUser.getCurrency().name()),
+        grpcUser.getPhoto(),
+        grpcUser.getPhotoSmall(),
+        grpcUser.getFriendshipStatus() != FRIENDSHIP_STATUS_UNSPECIFIED
+            ? FriendshipStatus.valueOf(grpcUser.getFriendshipStatus().name())
             : null
     );
   }

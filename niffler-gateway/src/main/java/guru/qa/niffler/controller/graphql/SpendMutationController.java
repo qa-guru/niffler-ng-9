@@ -5,7 +5,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.gql.CategoryGqlInput;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.api.GrpcCurrencyClient;
+import guru.qa.niffler.service.grpc.GrpcCurrencyClient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +32,8 @@ public class SpendMutationController {
   @MutationMapping
   public SpendJson spend(@AuthenticationPrincipal Jwt principal,
                          @Valid @Argument SpendGqlInput input) {
-    final String principalUsername = principal.getClaim("sub");
-    final SpendJson spendJson = SpendJson.fromSpendInput(input, principalUsername);
+    final String username = principal.getClaim("sub");
+    final SpendJson spendJson = SpendJson.fromSpendInput(input, username);
     return input.id() == null
         ? spendClient.addSpend(spendJson)
         : spendClient.editSpend(spendJson);
@@ -42,8 +42,8 @@ public class SpendMutationController {
   @MutationMapping
   public CategoryJson category(@AuthenticationPrincipal Jwt principal,
                                @Argument @Valid CategoryGqlInput input) {
-    final String principalUsername = principal.getClaim("sub");
-    final CategoryJson categoryJson = CategoryJson.fromCategoryInput(input, principalUsername);
+    final String username = principal.getClaim("sub");
+    final CategoryJson categoryJson = CategoryJson.fromCategoryInput(input, username);
     return input.id() == null
         ? spendClient.addCategory(categoryJson)
         : spendClient.updateCategory(categoryJson);
@@ -52,8 +52,8 @@ public class SpendMutationController {
   @MutationMapping
   public List<String> deleteSpend(@AuthenticationPrincipal Jwt principal,
                                   @Argument @NotEmpty List<String> ids) {
-    final String principalUsername = principal.getClaim("sub");
-    spendClient.deleteSpends(principalUsername, ids);
+    final String username = principal.getClaim("sub");
+    spendClient.deleteSpends(username, ids);
     return ids;
   }
 }

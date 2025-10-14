@@ -16,12 +16,13 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+import static guru.qa.niffler.utils.DateUtils.addDaysToDate;
 import static java.util.Arrays.stream;
 
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
@@ -52,7 +53,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
 
                   SpendJson spend = new SpendJson(
                       null,
-                      new Date(),
+                      addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spendAnno.addDaysToSpendDate()),
                       matchedCategory.orElseGet(() -> new CategoryJson(
                           null,
                           spendAnno.category(),
