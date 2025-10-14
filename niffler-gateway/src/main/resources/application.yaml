@@ -44,6 +44,9 @@ grpc:
     grpcCurrencyClient:
       address: 'static://localhost:8092'
       negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: 'static://localhost:8088'
+      negotiationType: PLAINTEXT
 
 niffler-currency:
   base-uri: 'http://127.0.0.1:8091'
@@ -75,6 +78,9 @@ grpc:
   client:
     grpcCurrencyClient:
       address: 'static://currency.niffler.dc:8092'
+      negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: 'static://userdata.niffler.dc:8088'
       negotiationType: PLAINTEXT
 
 niffler-currency:
@@ -112,6 +118,9 @@ grpc:
     grpcCurrencyClient:
       address: ${niffler-currency.grpc.url}
       negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: ${niffler-userdata.grpc.url}
+      negotiationType: PLAINTEXT
 
 niffler-currency:
   base-uri: ${niffler-currency.url}
@@ -147,6 +156,9 @@ grpc:
   client:
     grpcCurrencyClient:
       address: ${niffler-currency.grpc.url}
+      negotiationType: PLAINTEXT
+    grpcUserdataClient:
+      address: ${niffler-userdata.grpc.url}
       negotiationType: PLAINTEXT
 
 niffler-currency:

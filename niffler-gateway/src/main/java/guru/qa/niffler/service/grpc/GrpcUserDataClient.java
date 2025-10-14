@@ -35,7 +35,7 @@ public class GrpcUserDataClient implements UserDataClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
 
-  @GrpcClient("grpcCurrencyClient")
+  @GrpcClient("grpcUserdataClient")
   private NifflerUserdataServiceGrpc.NifflerUserdataServiceBlockingStub userdataStub;
 
   @Nonnull
