@@ -20,6 +20,7 @@ public interface UserDataClient {
   UserJson updateUserInfo(@Nonnull UserJson user);
 
   @Nonnull
+  @Deprecated
   List<UserJson> allUsers(String username,
                           @Nullable String searchQuery);
 
@@ -34,6 +35,7 @@ public interface UserDataClient {
                                   @Nullable String searchQuery);
 
   @Nonnull
+  @Deprecated
   List<UserJson> friends(String username,
                          @Nullable String searchQuery);
 

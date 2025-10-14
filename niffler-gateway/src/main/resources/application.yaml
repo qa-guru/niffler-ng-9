@@ -16,6 +16,7 @@ logging:
     net.devh.boot.grpc: INFO
     org.springframework.boot.autoconfigure: INFO
 
+# rest , soap , grpc
 niffler-userdata:
   client: soap
 
