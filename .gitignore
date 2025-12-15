@@ -41,3 +41,6 @@ out/
 ### gRPC generated files ###
 /niffler-grpc-common/src/generated/**
 /niffler-e-2-e-tests/.screen-output/**
+
+## Screenshots ###
+/niffler-e-2-e-tests/.screen-output
