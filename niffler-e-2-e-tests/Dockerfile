@@ -1,13 +1,11 @@
-FROM eclipse-temurin:21-jdk
+FROM gradle:8.14-jdk21
 
-WORKDIR /niffler-ng-9
+WORKDIR /home/gradle/niffler-ng-9
 ENV TZ=Europe/Moscow
-COPY ./gradle ./gradle
 COPY ./niffler-e-2-e-tests ./niffler-e-2-e-tests
 COPY ./niffler-grpc-common ./niffler-grpc-common
-COPY ./gradlew ./
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD ./gradlew test -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow
+CMD gradle test -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow

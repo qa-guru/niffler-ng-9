@@ -110,7 +110,7 @@ public class SpendingTest {
       )
   )
   @ApiLogin
-  @ScreenShotTest("img/expected-stat.png")
+  @ScreenShotTest("expected-stat.png")
   void checkStatComponentTest(BufferedImage expected) {
     new MainPage().getStatComponent()
         .checkBubbles(new Bubble(Color.yellow, "Обучение 79990 ₽"))
@@ -142,7 +142,7 @@ public class SpendingTest {
       }
   )
   @ApiLogin
-  @ScreenShotTest("img/expected-stat-archived.png")
+  @ScreenShotTest("expected-stat-archived.png")
   void statComponentShouldDisplayArchivedCategories(BufferedImage expected) {
     new MainPage().getStatComponent()
         .checkBubbles(

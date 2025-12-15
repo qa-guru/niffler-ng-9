@@ -34,6 +34,7 @@ public class AllureDockerExtension implements SuiteExtension {
         allureDockerApiClient.createProjectIfNotExist(projectId);
         allureDockerApiClient.clean(projectId);
       } catch (Throwable e) {
+        LOG.error("Error while creating project", e);
         allureBroken = true;
         // do nothing
       }
@@ -68,6 +69,7 @@ public class AllureDockerExtension implements SuiteExtension {
             System.getenv("EXECUTION_TYPE")
         );
       } catch (Throwable e) {
+        LOG.error("Error while sending results", e);
         // do nothing
       }
     }
