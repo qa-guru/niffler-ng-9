@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jdk
 
-WORKDIR /niffler
+WORKDIR /niffler-ng-9
 ENV TZ=Europe/Moscow
 COPY ./gradle ./gradle
 COPY ./niffler-e-2-e-tests ./niffler-e-2-e-tests
