@@ -49,7 +49,7 @@ public class ProfileTest {
 
   @User
   @ApiLogin
-  @ScreenShotTest("expected-avatar.png")
+  @ScreenShotTest(value = "expected-avatar.png", rewriteExpected = true)
   void shouldUpdateProfileWithAllFieldsSet(BufferedImage expectedAvatar) throws IOException {
     final String newName = randomName();
 
