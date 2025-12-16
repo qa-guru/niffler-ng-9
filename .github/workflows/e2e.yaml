@@ -20,7 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.GITHUB_SHA }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -59,10 +60,13 @@ jobs:
           docker pull twilio/selenoid:chrome_stable_135
       - name: Get the last commit message
         run: |
-          echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> $GITHUB_ENV
+          echo "HEAD_COMMIT_MESSAGE=$(git log -1 --format=%s ${{ github.event.pull_request.head.sha }})" >> $GITHUB_ENV
       - name: Prepare screenshot dir
         run: |
           mkdir -p niffler-e-2-e-tests/.screen-output/screenshots/selenoid
+      - name: Prepare logs dir
+        run: |
+          mkdir -p logs/niffler-auth logs/niffler-currency logs/niffler-gateway logs/niffler-spend logs/niffler-userdata
       - name: Run tests
         id: run-tests
         run: |

@@ -21,14 +21,15 @@ import static guru.qa.niffler.service.RestClient.executeForBody;
 import static guru.qa.niffler.service.RestClient.executeNoBody;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
 
 @ParametersAreNonnullByDefault
 public class UsersApiClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
 
-  private final AuthApi authApi = new RestClient.EmtyRestClient(CFG.authUrl()).create(AuthApi.class);
-  private final UserdataApi userdataApi = new RestClient.EmtyRestClient(CFG.userdataUrl()).create(UserdataApi.class);
+  private final AuthApi authApi = new RestClient.EmtyRestClient(CFG.authUrl(), NONE).create(AuthApi.class);
+  private final UserdataApi userdataApi = new RestClient.EmtyRestClient(CFG.userdataUrl(), NONE).create(UserdataApi.class);
 
   @NotNull
   @Override

@@ -3,6 +3,7 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.allure.AllureResults;
 import guru.qa.niffler.model.allure.DecodedAllureFile;
+import guru.qa.niffler.service.impl.AllureDockerApiClient;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +25,18 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final Path allureResultsDirectory = Path.of("./niffler-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
 
-  private static final guru.qa.niffler.service.impl.AllureDockerApiClient allureDockerApiClient = new guru.qa.niffler.service.impl.AllureDockerApiClient();
-  private boolean allureBroken = false;
+  private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
+  private static boolean allureBroken = false;
 
   @Override
   public void beforeSuite(ExtensionContext context) {
     if (inDocker) {
       try {
+        LOG.info("### Creating project {}", projectId);
         allureDockerApiClient.createProjectIfNotExist(projectId);
         allureDockerApiClient.clean(projectId);
       } catch (Throwable e) {
-        LOG.error("Error while creating project", e);
+        LOG.error("### Error while creating project", e);
         allureBroken = true;
         // do nothing
       }
@@ -44,6 +46,7 @@ public class AllureDockerExtension implements SuiteExtension {
   @Override
   public void afterSuite() {
     if (inDocker && !allureBroken) {
+      LOG.info("### Collect Allure artifacts");
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
         for (Path allureResult : paths.toList()) {
@@ -56,12 +59,14 @@ public class AllureDockerExtension implements SuiteExtension {
             );
           }
         }
+        LOG.info("### Send Allure artifacts");
         allureDockerApiClient.sendResultsToAllure(
             projectId,
             new AllureResults(
                 filesToSend
             )
         );
+        LOG.info("### Generate Allure report");
         allureDockerApiClient.generateReport(
             projectId,
             System.getenv("HEAD_COMMIT_MESSAGE"),
@@ -69,7 +74,7 @@ public class AllureDockerExtension implements SuiteExtension {
             System.getenv("EXECUTION_TYPE")
         );
       } catch (Throwable e) {
-        LOG.error("Error while sending results", e);
+        LOG.error("### Error while sending results", e);
         // do nothing
       }
     }

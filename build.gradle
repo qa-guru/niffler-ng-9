@@ -61,6 +61,12 @@ subprojects {
         }
         useJUnitPlatform()
     }
+
+    plugins.withId('com.google.cloud.tools.jib') {
+        jib {
+            containerizingMode = 'exploded'
+        }
+    }
 }
 
 dependencyUpdates {
