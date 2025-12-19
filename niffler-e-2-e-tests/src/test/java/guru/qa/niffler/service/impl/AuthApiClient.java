@@ -11,6 +11,8 @@ import guru.qa.niffler.utils.OAuthUtils;
 import lombok.SneakyThrows;
 import retrofit2.Response;
 
+import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
+
 
 public class AuthApiClient extends RestClient {
 
@@ -18,7 +20,7 @@ public class AuthApiClient extends RestClient {
   private final AuthApi authApi;
 
   public AuthApiClient() {
-    super(CFG.authUrl(), true, new CodeInterceptor());
+    super(CFG.authUrl(), true, NONE, new CodeInterceptor());
     this.authApi = create(AuthApi.class);
   }
 

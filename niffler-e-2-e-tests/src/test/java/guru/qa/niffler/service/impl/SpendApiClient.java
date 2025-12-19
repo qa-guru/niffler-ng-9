@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static guru.qa.niffler.utils.DateUtils.getDateAsString;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.NONE;
 
 @ParametersAreNonnullByDefault
 public final class SpendApiClient extends RestClient implements SpendClient {
@@ -25,7 +26,7 @@ public final class SpendApiClient extends RestClient implements SpendClient {
   private final SpendApi spendApi;
 
   public SpendApiClient() {
-    super(CFG.spendUrl());
+    super(CFG.spendUrl(), NONE);
     this.spendApi = create(SpendApi.class);
   }
 

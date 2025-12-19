@@ -56,6 +56,10 @@ public abstract class RestClient {
     this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, interceptors);
   }
 
+  public RestClient(String baseUrl, boolean followRedirect, HttpLoggingInterceptor.Level level, Interceptor... interceptors) {
+    this(baseUrl, followRedirect, JacksonConverterFactory.create(), level, interceptors);
+  }
+
   public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, Interceptor... interceptors) {
     this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.HEADERS, interceptors);
   }
@@ -148,6 +152,10 @@ public abstract class RestClient {
   public static final class EmtyRestClient extends RestClient {
     public EmtyRestClient(String baseUrl) {
       super(baseUrl);
+    }
+
+    public EmtyRestClient(String baseUrl, HttpLoggingInterceptor.Level level) {
+      super(baseUrl, level);
     }
 
     public EmtyRestClient(String baseUrl, boolean followRedirect) {
